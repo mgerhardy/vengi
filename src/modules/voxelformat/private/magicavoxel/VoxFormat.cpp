@@ -8,6 +8,7 @@
 #include "core/ScopedPtr.h"
 #include "core/StringUtil.h"
 #include "core/Var.h"
+#include "scenegraph/CoordinateSystemUtil.h"
 #include "scenegraph/SceneGraph.h"
 #include "scenegraph/SceneGraphNode.h"
 #include "voxel/RawVolume.h"
@@ -55,37 +56,17 @@ bool VoxFormat::loadInstance(const ogt_vox_scene *scene, uint32_t ogt_instanceId
 	const ogt_vox_instance &ogtInstance = scene->instances[ogt_instanceIdx];
 	const ogt_vox_model *ogtModel = scene->models[ogtInstance.model_index];
 	const glm::mat4 &ogtMat = ogtTransformToMat(ogtInstance, 0, scene, ogtModel);
-	const glm::ivec3 &ogtMins = calcTransform(ogtMat, glm::vec3(0));
-	const glm::ivec3 &ogtMaxs = calcTransform(ogtMat, ogtVolumeSize(ogtModel));
-	const glm::ivec3 mins(-(ogtMins.x + 1), ogtMins.z, ogtMins.y);
-	const glm::ivec3 maxs(-(ogtMaxs.x + 1), ogtMaxs.z, ogtMaxs.y);
-	voxel::Region region(glm::min(mins, maxs), glm::max(mins, maxs));
-	const glm::ivec3 shift = region.getLowerCorner();
-	region.shift(-shift);
-	voxel::RawVolume *v = new voxel::RawVolume(region);
-	scenegraph::SceneGraphTransform transform;
-	transform.setWorldTranslation(shift);
-
-	const uint8_t *ogtVoxel = ogtModel->voxel_data;
-	for (uint32_t k = 0; k < ogtModel->size_z; ++k) {
-		for (uint32_t j = 0; j < ogtModel->size_y; ++j) {
-			for (uint32_t i = 0; i < ogtModel->size_x; ++i, ++ogtVoxel) {
-				if (ogtVoxel[0] == 0) {
-					continue;
-				}
-				const voxel::Voxel voxel = voxel::createVoxel(palette, ogtVoxel[0] - 1);
-				const glm::ivec3 &ogtPos = calcTransform(ogtMat, glm::vec3(i, j, k));
-				const glm::ivec3 pos(-(ogtPos.x + 1), ogtPos.z, ogtPos.y);
-				v->setVoxel(pos - shift, voxel);
-			}
-		}
-	}
-
-	scenegraph::SceneGraphNode node(scenegraph::SceneGraphNodeType::Model);
-	loadKeyFrames(sceneGraph, node, ogtInstance, scene);
-	// TODO: we are overriding the keyframe data here
 	const scenegraph::KeyFrameIndex keyFrameIdx = 0;
+	scenegraph::SceneGraphTransform transform;
+	transform.setLocalMatrix(scenegraph::convertCoordinateSystem(scenegraph::CoordinateSystem::MagicaVoxel, ogtMat));
+
+	scenegraph::SceneGraphNodeType type = scenegraph::SceneGraphNodeType::Model;
+	if (models[ogtInstance.model_index].nodeId != InvalidNodeId) {
+		type = scenegraph::SceneGraphNodeType::ModelReference;
+	}
+	scenegraph::SceneGraphNode node(type);
 	node.setTransform(keyFrameIdx, transform);
+	loadKeyFrames(sceneGraph, node, ogtInstance, scene);
 	node.setColor(instanceColor(scene, ogtInstance));
 	if (ogtInstance.layer_index < scene->num_layers) {
 		const ogt_vox_layer &ogtLayer = scene->layers[ogtInstance.layer_index];
@@ -96,14 +77,22 @@ bool VoxFormat::loadInstance(const ogt_vox_scene *scene, uint32_t ogt_instanceId
 	node.setProperty("layerId", core::string::toString(ogtInstance.layer_index));
 	node.setName(instanceName(scene, ogtInstance));
 	node.setVisible(!instanceHidden(scene, ogtInstance));
-	node.setVolume(v, true);
-	// TODO: use already loaded models and create a model reference if needed
-	// TODO: node.setVolume(new voxel::RawVolume(models[ogtInstance.model_index].volume), true);
+	if (type == scenegraph::SceneGraphNodeType::ModelReference) {
+		node.setReference(models[ogtInstance.model_index].nodeId);
+	} else {
+		node.setVolume(models[ogtInstance.model_index].volume, true);
+		models[ogtInstance.model_index].volume = nullptr;
+	}
 	// TODO: set correct pivot
 	// TODO: node.setPivot({ogtPivot.x / (float)ogtModel->size_x, ogtPivot.z / (float)ogtModel->size_z, ogtPivot.y / (float)ogtModel->size_y});
 	// TODO: node.setPivot({(ogtPivot.x + 0.5f) / (float)ogtModel->size_x, (ogtPivot.z + 0.5f) / (float)ogtModel->size_z, (ogtPivot.y + 0.5f) / (float)ogtModel->size_y});
 	node.setPalette(palette);
-	return sceneGraph.emplace(core::move(node), parent) != -1;
+	const int nodeId = sceneGraph.emplace(core::move(node), parent);
+	if (nodeId != InvalidNodeId) {
+		models[ogtInstance.model_index].nodeId = nodeId;
+		return true;
+	}
+	return false;
 }
 
 bool VoxFormat::loadGroup(const ogt_vox_scene *scene, uint32_t ogt_groupIdx, scenegraph::SceneGraph &sceneGraph,
