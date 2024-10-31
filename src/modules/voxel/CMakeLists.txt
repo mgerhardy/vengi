@@ -24,7 +24,7 @@ set(SRCS
 	VoxelNormalUtil.h VoxelNormalUtil.cpp
 )
 engine_add_module(TARGET ${LIB} SRCS ${SRCS} DEPENDENCIES commonlua palette meshoptimizer)
-engine_target_optimize(${LIB})
+# engine_target_optimize(${LIB})
 
 set(TEST_SRCS
 	tests/AbstractVoxelTest.h
