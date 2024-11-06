@@ -204,7 +204,7 @@
 #elif defined(_MSC_VER)
     // general VS*
     #include <inttypes.h>
-#elif __APPLE__
+#elif SDL_PLATFORM_APPLE
     // general Apple compiler
     #include <stdint.h>
     #include <limits.h>

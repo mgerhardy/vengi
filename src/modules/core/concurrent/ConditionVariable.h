@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <SDL3/SDL_mutex.h>
 #include <stdint.h>
 
 struct SDL_cond;
@@ -20,7 +21,7 @@ enum class ConditionVariableState {
 
 class ConditionVariable {
 private:
-	SDL_cond* _conditionVariable;
+	SDL_Condition* _conditionVariable;
 public:
 	ConditionVariable();
 	~ConditionVariable();

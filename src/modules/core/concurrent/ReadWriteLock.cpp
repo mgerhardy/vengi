@@ -3,7 +3,7 @@
  */
 
 #include "ReadWriteLock.h"
-#include <SDL_mutex.h>
+#include <SDL3/SDL_mutex.h>
 
 namespace core {
 

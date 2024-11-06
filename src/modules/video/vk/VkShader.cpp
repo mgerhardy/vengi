@@ -7,7 +7,7 @@
 #include "core/Assert.h"
 #include "core/GLM.h"
 #include "flextVk.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace video {

@@ -6,17 +6,17 @@
 #include "video/IEventObserver.h"
 #include "core/GLM.h"
 #include "core/Assert.h"
+#include <SDL3/SDL_events.h>
 #include <glm/common.hpp>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace video {
 
 EventHandler::EventHandler() :
 		_multiGesture(false) {
-	//SDL_JoystickEventState(SDL_DISABLE);
-	SDL_EventState(SDL_JOYAXISMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
-	SDL_EventState(SDL_DROPTEXT, SDL_ENABLE);
+	SDL_SetEventEnabled(SDL_EVENT_JOYSTICK_AXIS_MOTION, true);
+	SDL_SetEventEnabled(SDL_EVENT_DROP_FILE, true);
+	SDL_SetEventEnabled(SDL_EVENT_DROP_TEXT, true);
 }
 
 EventHandler::~EventHandler() {
@@ -33,7 +33,7 @@ void EventHandler::removeObserver(IEventObserver* observer) {
 }
 
 core::String EventHandler::getControllerButtonName(uint8_t button) {
-	const char *name = SDL_GameControllerGetStringForButton(static_cast<SDL_GameControllerButton>(button));
+	const char *name = SDL_GetGamepadStringForButton(static_cast<SDL_GamepadButton>(button));
 	if (name == nullptr) {
 		return "unknown";
 	}
@@ -42,24 +42,22 @@ core::String EventHandler::getControllerButtonName(uint8_t button) {
 
 bool EventHandler::handleEvent(SDL_Event &event) {
 	switch (event.type) {
-	case SDL_DROPFILE:
-		dropFile((void*)SDL_GetWindowFromID(event.drop.windowID), event.drop.file);
-		SDL_free(event.drop.file);
+	case SDL_EVENT_DROP_FILE:
+		dropFile((void*)SDL_GetWindowFromID(event.drop.windowID), event.drop.data);
 		break;
-	case SDL_DROPTEXT:
-		dropText((void*)SDL_GetWindowFromID(event.drop.windowID), event.drop.file);
-		SDL_free(event.drop.file);
+	case SDL_EVENT_DROP_TEXT:
+		dropText((void*)SDL_GetWindowFromID(event.drop.windowID), event.drop.data);
 		break;
-	case SDL_TEXTINPUT:
+	case SDL_EVENT_TEXT_INPUT:
 		textInput((void*)SDL_GetWindowFromID(event.text.windowID), core::String(event.text.text));
 		break;
-	case SDL_KEYUP:
-		keyRelease((void*)SDL_GetWindowFromID(event.key.windowID), (int32_t) event.key.keysym.sym, (int16_t) event.key.keysym.mod);
+	case SDL_EVENT_KEY_UP:
+		keyRelease((void*)SDL_GetWindowFromID(event.key.windowID), (int32_t) event.key.key, (int16_t) event.key.mod);
 		break;
-	case SDL_KEYDOWN:
-		keyPress((void*)SDL_GetWindowFromID(event.key.windowID), (int32_t) event.key.keysym.sym, (int16_t) event.key.keysym.mod);
+	case SDL_EVENT_KEY_DOWN:
+		keyPress((void*)SDL_GetWindowFromID(event.key.windowID), (int32_t) event.key.key, (int16_t) event.key.mod);
 		break;
-	case SDL_MOUSEMOTION: {
+	case SDL_EVENT_MOUSE_MOTION: {
 		if (event.motion.which == SDL_TOUCH_MOUSEID) {
 			break;
 		}
@@ -67,105 +65,103 @@ bool EventHandler::handleEvent(SDL_Event &event) {
 		mouseMotion((void*)window, event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel, event.motion.which);
 		break;
 	}
-	case SDL_MOUSEBUTTONDOWN:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		if (event.button.which == SDL_TOUCH_MOUSEID) {
 			break;
 		}
 		mouseButtonPress((void*)SDL_GetWindowFromID(event.button.windowID), event.button.x, event.button.y, event.button.button, event.button.clicks, event.button.which);
 		break;
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
 		if (event.button.which == SDL_TOUCH_MOUSEID) {
 			break;
 		}
 		mouseButtonRelease((void*)SDL_GetWindowFromID(event.button.windowID), event.button.x, event.button.y, event.button.button, event.button.which);
 		break;
-	case SDL_MOUSEWHEEL: {
+	case SDL_EVENT_MOUSE_WHEEL: {
 		if (event.wheel.which == SDL_TOUCH_MOUSEID) {
 			break;
 		}
-		float x;
-		float y;
-#if SDL_VERSION_ATLEAST(2, 0, 18)
-		x = event.wheel.preciseX;
-		y = event.wheel.preciseY;
-#else
-		x = (float)event.wheel.x;
-		y = (float)event.wheel.y;
-#endif
+		float x = event.wheel.x;
+		float y = event.wheel.y;
 		x = glm::clamp(x, -1.0f, 1.0f);
 		y = glm::clamp(y, -1.0f, 1.0f);
 		mouseWheel((void*)SDL_GetWindowFromID(event.wheel.windowID), x, y, event.wheel.which);
 		break;
 	}
-	case SDL_CONTROLLERAXISMOTION:
-		controllerMotion(event.caxis.axis, event.caxis.value, event.caxis.which);
+	case SDL_EVENT_GAMEPAD_AXIS_MOTION:
+		controllerMotion(event.gaxis.axis, event.gaxis.value, event.gaxis.which);
 		break;
-	case SDL_CONTROLLERBUTTONDOWN:
-		controllerButtonPress(getControllerButtonName(event.cbutton.button), event.cbutton.which);
+	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+		controllerButtonPress(getControllerButtonName(event.gbutton.button), event.gbutton.which);
 		break;
-	case SDL_CONTROLLERBUTTONUP:
-		controllerButtonRelease(getControllerButtonName(event.cbutton.button), event.cbutton.which);
+	case SDL_EVENT_GAMEPAD_BUTTON_UP:
+		controllerButtonRelease(getControllerButtonName(event.gbutton.button), event.gbutton.which);
 		break;
-	case SDL_CONTROLLERDEVICEADDED:
+	case SDL_EVENT_GAMEPAD_ADDED:
 		controllerDeviceAdded(event.cdevice.which);
 		break;
-	case SDL_CONTROLLERDEVICEREMOVED:
+	case SDL_EVENT_GAMEPAD_REMOVED:
 		controllerDeviceRemoved(event.cdevice.which);
 		break;
-	case SDL_JOYHATMOTION:
-	case SDL_JOYDEVICEADDED:
-	case SDL_JOYDEVICEREMOVED:
-	case SDL_JOYBUTTONDOWN:
-	case SDL_JOYBUTTONUP:
-	case SDL_JOYAXISMOTION:
+	case SDL_EVENT_JOYSTICK_HAT_MOTION:
+	case SDL_EVENT_JOYSTICK_ADDED:
+	case SDL_EVENT_JOYSTICK_REMOVED:
+	case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+	case SDL_EVENT_JOYSTICK_BUTTON_UP:
+	case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+	case SDL_EVENT_JOYSTICK_BALL_MOTION:
 		// ignore joystick events - use gamecontroller events
 		break;
-	case SDL_FINGERDOWN:
-		fingerPress((void*)SDL_GetWindowFromID(event.key.windowID), event.tfinger.fingerId, event.tfinger.x, event.tfinger.y);
+	case SDL_EVENT_FINGER_DOWN:
+		fingerPress((void*)SDL_GetWindowFromID(event.key.windowID), event.tfinger.fingerID, event.tfinger.x, event.tfinger.y);
 		break;
-	case SDL_FINGERUP:
-		fingerRelease((void*)SDL_GetWindowFromID(event.key.windowID), event.tfinger.fingerId, event.tfinger.x, event.tfinger.y);
+	case SDL_EVENT_FINGER_UP:
+		fingerRelease((void*)SDL_GetWindowFromID(event.key.windowID), event.tfinger.fingerID, event.tfinger.x, event.tfinger.y);
 		break;
-	case SDL_FINGERMOTION:
-		fingerMotion((void*)SDL_GetWindowFromID(event.key.windowID), event.tfinger.fingerId, event.tfinger.x, event.tfinger.y, event.tfinger.dx, event.tfinger.dy);
+	case SDL_EVENT_FINGER_MOTION:
+		fingerMotion((void*)SDL_GetWindowFromID(event.key.windowID), event.tfinger.fingerID, event.tfinger.x, event.tfinger.y, event.tfinger.dx, event.tfinger.dy);
 		break;
-	case SDL_WINDOWEVENT: {
+	case SDL_EVENT_WINDOW_RESTORED: {
 		SDL_Window* window = SDL_GetWindowFromID(event.window.windowID);
-		switch (event.window.event) {
-		case SDL_WINDOWEVENT_RESTORED:
-			for (IEventObserver* observer : _observers) {
-				observer->onWindowRestore((void*)window);
-			}
-			break;
-		case SDL_WINDOWEVENT_RESIZED:
-			for (IEventObserver* observer : _observers) {
-				const int w = event.window.data1;
-				const int h = event.window.data2;
-				observer->onWindowResize((void*)window, w, h);
-			}
-			break;
-		case SDL_WINDOWEVENT_CLOSE:
-			for (IEventObserver* observer : _observers) {
-				observer->onWindowClose((void*)window);
-			}
-			break;
-		case SDL_WINDOWEVENT_MOVED:
-			for (IEventObserver* observer : _observers) {
-				observer->onWindowMoved((void*)window);
-			}
-			break;
-		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			for (IEventObserver* observer : _observers) {
-				observer->onWindowFocusGained((void*)window);
-			}
-			break;
-		case SDL_WINDOWEVENT_FOCUS_LOST:
-			for (IEventObserver* observer : _observers) {
-				observer->onWindowFocusLost((void*)window);
-			}
-			break;
-		default:
-			break;
+		for (IEventObserver* observer : _observers) {
+			observer->onWindowRestore((void*)window);
+		}
+		break;
+	}
+	case SDL_EVENT_WINDOW_RESIZED: {
+		SDL_Window* window = SDL_GetWindowFromID(event.window.windowID);
+		for (IEventObserver* observer : _observers) {
+			const int w = event.window.data1;
+			const int h = event.window.data2;
+			observer->onWindowResize((void*)window, w, h);
+		}
+		break;
+	}
+	case SDL_EVENT_WINDOW_CLOSE_REQUESTED: {
+		SDL_Window* window = SDL_GetWindowFromID(event.window.windowID);
+		for (IEventObserver* observer : _observers) {
+			observer->onWindowClose((void*)window);
+		}
+		break;
+	}
+	case SDL_EVENT_WINDOW_MOVED: {
+		SDL_Window* window = SDL_GetWindowFromID(event.window.windowID);
+		for (IEventObserver* observer : _observers) {
+			observer->onWindowMoved((void*)window);
+		}
+		break;
+	}
+	case SDL_EVENT_WINDOW_FOCUS_GAINED: {
+		SDL_Window* window = SDL_GetWindowFromID(event.window.windowID);
+		for (IEventObserver* observer : _observers) {
+			observer->onWindowFocusGained((void*)window);
+		}
+		break;
+	}
+	case SDL_EVENT_WINDOW_FOCUS_LOST: {
+		SDL_Window* window = SDL_GetWindowFromID(event.window.windowID);
+		for (IEventObserver* observer : _observers) {
+			observer->onWindowFocusLost((void*)window);
 		}
 		break;
 	}
@@ -193,22 +189,22 @@ bool EventHandler::handleEvent(SDL_Event &event) {
 
 bool EventHandler::handleAppEvent(SDL_Event &event) {
 	switch (event.type) {
-	case SDL_APP_TERMINATING:
+	case SDL_EVENT_TERMINATING:
 		prepareShutdown();
 		break;
-	case SDL_APP_LOWMEMORY:
+	case SDL_EVENT_LOW_MEMORY:
 		lowMemory();
 		break;
-	case SDL_APP_WILLENTERBACKGROUND:
+	case SDL_EVENT_WILL_ENTER_BACKGROUND:
 		prepareBackground();
 		return true;
-	case SDL_APP_DIDENTERBACKGROUND:
+	case SDL_EVENT_DID_ENTER_BACKGROUND:
 		background();
 		return true;
-	case SDL_APP_WILLENTERFOREGROUND:
+	case SDL_EVENT_WILL_ENTER_FOREGROUND:
 		prepareForeground();
 		return true;
-	case SDL_APP_DIDENTERFOREGROUND:
+	case SDL_EVENT_DID_ENTER_FOREGROUND:
 		foreground();
 		return true;
 	}

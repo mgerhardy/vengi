@@ -3188,7 +3188,7 @@ static int mz_stat64(const char *path, struct __stat64 *buffer)
 #define MZ_FREOPEN(p, m, s) freopen64(p, m, s)
 #define MZ_DELETE_FILE remove
 
-#elif defined(__APPLE__) || defined(__FreeBSD__) || (defined(__linux__) && defined(__x86_64__))
+#elif defined(SDL_PLATFORM_APPLE) || defined(__FreeBSD__) || (defined(__linux__) && defined(__x86_64__))
 #ifndef MINIZ_NO_TIME
 #include <utime.h>
 #endif

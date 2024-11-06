@@ -6,7 +6,8 @@
 #include "core/Log.h"
 #include "core/StringUtil.h"
 #include "io/FormatDescription.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_iostream.h>
 #ifdef __EMSCRIPTEN__
 #include "system/emscripten_browser_file.h"
 #endif
@@ -15,7 +16,7 @@ namespace io {
 
 void normalizePath(core::String& str) {
 	core::string::replaceAllChars(str, '\\', '/');
-#ifndef __WINDOWS__
+#ifndef SDL_PLATFORM_WINDOWS
 	if (str.size() >= 3 && str[0] != '\0' && core::string::isAlpha(str[0]) && str[1] == ':' && (str[2] == '\\' || str[2] == '/')) {
 		str.erase(0, 2);
 	}
@@ -60,9 +61,9 @@ bool File::exists() const {
 	}
 
 	// try to open in read mode
-	SDL_RWops* ops = createRWops(FileMode::SysRead);
+	SDL_IOStream* ops = createRWops(FileMode::SysRead);
 	if (ops != nullptr) {
-		SDL_RWclose(ops);
+		SDL_CloseIO(ops);
 		return true;
 	}
 	return false;
@@ -98,7 +99,7 @@ void File::error(const char *msg, ...) const {
 	Log::debug("path: '%s' (mode: %i): %s", _rawPath.c_str(), (int)_mode, _error.c_str());
 }
 
-SDL_RWops* File::createRWops(FileMode mode) const {
+SDL_IOStream* File::createRWops(FileMode mode) const {
 	if (_rawPath.empty()) {
 		error("Can't open file - no path given");
 		return nullptr;
@@ -109,7 +110,7 @@ SDL_RWops* File::createRWops(FileMode mode) const {
 	} else if (mode == FileMode::Append) {
 		fmode = "ab";
 	}
-	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), fmode);
+	SDL_IOStream *rwops = SDL_IOFromFile(_rawPath.c_str(), fmode);
 	if (rwops == nullptr) {
 		error("%s", SDL_GetError());
 	}
@@ -132,7 +133,7 @@ long File::write(io::ReadStream &stream) const {
 		if (len == -1) {
 			return -1L;
 		}
-		const size_t written = SDL_RWwrite(_file, buf, 1, len);
+		const size_t written = SDL_WriteIO(_file, buf, len);
 		if (written == 0) {
 			error("Error writing file - failed to write buffer of length %i", (int)len);
 			return -1L;
@@ -158,7 +159,7 @@ long File::write(const unsigned char *buf, size_t len) const {
 
 	int remaining = (int)len;
 	while (remaining > 0) {
-		const size_t written = SDL_RWwrite(_file, buf, 1, remaining);
+		const size_t written = SDL_WriteIO(_file, buf, remaining);
 		if (written == 0) {
 			Log::debug("Error writing file - can write buffer of length %i (remaining: %i) (path: %s)",
 					(int)len, remaining, _rawPath.c_str());
@@ -196,9 +197,9 @@ long File::length() const {
 	}
 
 	const long pos = tell();
-	seek(0, RW_SEEK_END);
+	seek(0, SDL_IO_SEEK_END);
 	const long end = tell();
-	seek(pos, RW_SEEK_SET);
+	seek(pos, SDL_IO_SEEK_SET);
 	return end;
 }
 
@@ -220,7 +221,7 @@ int File::read(void *buffer, int n) {
 	len = remaining = n;
 	buf = (uint8_t *) buffer;
 
-	seek(0, RW_SEEK_SET);
+	seek(0, SDL_IO_SEEK_SET);
 
 	while (remaining != 0u) {
 		size_t block = remaining;
@@ -251,7 +252,7 @@ int File::read(void *buf, size_t size, size_t maxnum) {
 		Log::debug("File %s is not opened in read mode", _rawPath.c_str());
 		return -1;
 	}
-	const int n = (int)SDL_RWread(_file, buf, size, maxnum);
+	const int n = (int)SDL_ReadIO(_file, buf, size * maxnum) / size;
 	if (n == 0) {
 		_state = IOSTATE_LOADED;
 		Log::trace("File %s: read successful", _rawPath.c_str());
@@ -267,7 +268,7 @@ int File::read(void *buf, size_t size, size_t maxnum) {
 
 bool File::flush() {
 	if (_file != nullptr) {
-		SDL_RWclose(_file);
+		SDL_CloseIO(_file);
 		if (_mode == FileMode::Write || _mode == FileMode::SysWrite) {
 			_mode = FileMode::Append;
 		}
@@ -279,7 +280,7 @@ bool File::flush() {
 
 void File::close() {
 	if (_file != nullptr) {
-		SDL_RWclose(_file);
+		SDL_CloseIO(_file);
 		_file = nullptr;
 #ifdef __EMSCRIPTEN__
 		if (_mode == FileMode::SysWrite) {
@@ -294,7 +295,7 @@ void File::close() {
 					emscripten_browser_file::download(_rawPath.c_str(), "application/octet-stream", buf, (size_t)len);
 				}
 				delete[] buf;
-				SDL_RWclose(_file);
+				SDL_CloseIO(_file);
 				_file = nullptr;
 			}
 			_mode = FileMode::SysWrite;
@@ -315,14 +316,14 @@ bool File::open(FileMode mode) {
 
 long File::tell() const {
 	if (_file != nullptr) {
-		return SDL_RWtell(_file);
+		return SDL_TellIO(_file);
 	}
 	return -1L;
 }
 
 long File::seek(long offset, int seekType) const {
 	if (_file != nullptr) {
-		return SDL_RWseek(_file, offset, seekType);
+		return SDL_SeekIO(_file, offset, (SDL_IOWhence)seekType);
 	}
 	return -1L;
 }

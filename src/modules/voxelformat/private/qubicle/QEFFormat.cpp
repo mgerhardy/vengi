@@ -11,7 +11,7 @@
 #include "voxel/MaterialColor.h"
 #include "voxel/Voxel.h"
 #include "palette/Palette.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <glm/common.hpp>
 
 namespace voxelformat {

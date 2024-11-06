@@ -7,7 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include <inttypes.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace core {
 

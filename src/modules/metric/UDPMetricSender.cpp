@@ -6,7 +6,7 @@
 #include "core/Log.h"
 #include "core/Assert.h"
 #include <string.h>
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 #define network_cleanup() WSACleanup()
 #define network_return int
 #else

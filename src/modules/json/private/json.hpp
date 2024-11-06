@@ -17871,7 +17871,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         result["platform"] = "win32";
 #elif defined __linux__
         result["platform"] = "linux";
-#elif defined __APPLE__
+#elif defined SDL_PLATFORM_APPLE
         result["platform"] = "apple";
 #elif defined __unix__
         result["platform"] = "unix";

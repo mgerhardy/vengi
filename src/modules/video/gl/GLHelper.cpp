@@ -8,7 +8,7 @@
 #include "core/Common.h"
 #include "core/collection/List.h"
 #include "core/Log.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace video {
 
@@ -16,7 +16,7 @@ namespace _priv {
 
 static int _recompileErrors = 0;
 
-#ifdef __WIN32__
+#ifdef SDL_PLATFORM_WIN32
 void __stdcall
 #else
 void

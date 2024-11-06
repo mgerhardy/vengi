@@ -120,7 +120,7 @@
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
 #include <stdint.h>     // intptr_t
-#if defined(__APPLE__)
+#if defined(SDL_PLATFORM_APPLE)
 #include <TargetConditionals.h>
 #endif
 
@@ -143,7 +143,7 @@
 
 // GL includes
 #if defined(IMGUI_IMPL_OPENGL_ES2)
-#if (defined(__APPLE__) && (TARGET_OS_IOS || TARGET_OS_TV))
+#if (defined(SDL_PLATFORM_APPLE) && (TARGET_OS_IOS || TARGET_OS_TV))
 #include <OpenGLES/ES2/gl.h>    // Use GL ES 2
 #else
 #include <GLES2/gl2.h>          // Use GL ES 2
@@ -155,7 +155,7 @@
 #include <GLES2/gl2ext.h>
 #endif
 #elif defined(IMGUI_IMPL_OPENGL_ES3)
-#if (defined(__APPLE__) && (TARGET_OS_IOS || TARGET_OS_TV))
+#if (defined(SDL_PLATFORM_APPLE) && (TARGET_OS_IOS || TARGET_OS_TV))
 #include <OpenGLES/ES3/gl.h>    // Use GL ES 3
 #else
 #include <GLES3/gl3.h>          // Use GL ES 3
@@ -358,7 +358,7 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
         glsl_version = "#version 100";
 #elif defined(IMGUI_IMPL_OPENGL_ES3)
         glsl_version = "#version 300 es";
-#elif defined(__APPLE__)
+#elif defined(SDL_PLATFORM_APPLE)
         glsl_version = "#version 150";
 #else
         glsl_version = "#version 130";

@@ -5,7 +5,7 @@
 #include "app/tests/AbstractTest.h"
 #include "util/CustomButtonNames.h"
 #include "util/KeybindingParser.h"
-#include <SDL_keycode.h>
+#include <SDL3/SDL.h>
 
 namespace util {
 
@@ -54,23 +54,23 @@ TEST_F(KeybindingParserTest, testParsing) {
 		const CommandModifierPair& pair = i->second;
 		const core::String& command = pair.command;
 		const int16_t mod = pair.modifier;
-		if ((mod & KMOD_SHIFT) && (mod & KMOD_ALT) && (mod & KMOD_CONTROL)) {
+		if ((mod & SDL_KMOD_SHIFT) && (mod & SDL_KMOD_ALT) && (mod & SDL_KMOD_CONTROL)) {
 			EXPECT_EQ("allmodscommand", command);
 			EXPECT_FALSE(allmodscommand);
 			allmodscommand = true;
-		} else if ((mod & KMOD_SHIFT) && (mod & KMOD_CONTROL)) {
+		} else if ((mod & SDL_KMOD_SHIFT) && (mod & SDL_KMOD_CONTROL)) {
 			EXPECT_EQ("ctrlshiftmodcommand", command);
 			EXPECT_FALSE(ctrlshiftmodcommand);
 			ctrlshiftmodcommand = true;
-		} else if (mod & KMOD_SHIFT) {
+		} else if (mod & SDL_KMOD_SHIFT) {
 			EXPECT_EQ("+xyz", command);
 			EXPECT_FALSE(xyz);
 			xyz = true;
-		} else if (mod & KMOD_CONTROL) {
+		} else if (mod & SDL_KMOD_CONTROL) {
 			EXPECT_EQ("+bar", command);
 			EXPECT_FALSE(bar);
 			bar = true;
-		} else if (mod & KMOD_ALT) {
+		} else if (mod & SDL_KMOD_ALT) {
 			EXPECT_EQ("somecommand +", command);
 			EXPECT_FALSE(somecommand);
 			somecommand = true;
@@ -100,8 +100,8 @@ TEST_F(KeybindingParserTest, testParsing) {
 		const core::String& command = pair.command;
 		const int16_t mod = pair.modifier;
 		EXPECT_EQ("someothercommand +", command);
-		EXPECT_TRUE(mod & KMOD_LALT) << "command " << command << " modifier wasn't parsed properly";
-		EXPECT_TRUE(!(mod & KMOD_RALT)) << "command " << command << " modifier wasn't parsed properly";
+		EXPECT_TRUE(mod & SDL_KMOD_LALT) << "command " << command << " modifier wasn't parsed properly";
+		EXPECT_TRUE(!(mod & SDL_KMOD_RALT)) << "command " << command << " modifier wasn't parsed properly";
 		++count;
 	}
 	EXPECT_EQ(1, count);
@@ -113,9 +113,9 @@ TEST_F(KeybindingParserTest, testParsing) {
 		const CommandModifierPair& pair = i->second;
 		const core::String& command = pair.command;
 		const int16_t mod = pair.modifier;
-		if ((mod & KMOD_CONTROL)) {
+		if ((mod & SDL_KMOD_CONTROL)) {
 			EXPECT_EQ("echo +", command);
-			EXPECT_TRUE(mod & KMOD_CONTROL) << "command " << command << " modifier wasn't parsed properly";
+			EXPECT_TRUE(mod & SDL_KMOD_CONTROL) << "command " << command << " modifier wasn't parsed properly";
 			++count;
 		} else {
 			if (mod == 0) {

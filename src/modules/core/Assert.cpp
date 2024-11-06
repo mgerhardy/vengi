@@ -6,7 +6,7 @@
 #include "Log.h"
 #include "core/String.h"
 #include "core/StringUtil.h"
-#include <SDL_assert.h>
+#include <SDL3/SDL_assert.h>
 
 #ifdef HAVE_BACKWARD
 #include <backward.h>
@@ -23,7 +23,7 @@ const char *core_crashlog_path() {
 
 static_assert(sizeof(SDL_AssertData) == sizeof(AssertData));
 
-static SDL_assert_state coreAssertionHandler(const SDL_assert_data *data, void *userdata) {
+static SDL_AssertState coreAssertionHandler(const SDL_AssertData *data, void *userdata) {
 	if (data->trigger_count <= 1 && data->always_ignore == 0) {
 		core_stacktrace();
 	}

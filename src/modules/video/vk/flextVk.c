@@ -2,7 +2,7 @@
 /* Do not edit. */
 
 #include "flextVk.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -176,7 +176,7 @@ int flextVkInit(void) {
     if (vulkanLibrary == NULL) {
         vulkanLibrary = SDL_LoadObject("libvulkan.so.1");
     }
-#elif defined(__APPLE__)
+#elif defined(SDL_PLATFORM_APPLE)
     vulkanLibrary = SDL_LoadObject("libvulkan.dylib");
 #elif defined(_WIN32)
     vulkanLibrary = SDL_LoadObject("vulkan-1.dll");

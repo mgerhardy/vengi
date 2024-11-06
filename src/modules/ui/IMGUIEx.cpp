@@ -15,7 +15,7 @@
 #include "video/Camera.h"
 #include "video/FileDialogOptions.h"
 #include "video/WindowedApp.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>

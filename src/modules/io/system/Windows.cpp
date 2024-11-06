@@ -2,9 +2,9 @@
  * @file
  */
 
-#include <SDL_platform.h>
+#include <SDL3/SDL_platform.h>
 
-#if defined(__WINDOWS__)
+#if defined(SDL_PLATFORM_WINDOWS)
 #include "core/collection/DynamicArray.h"
 #include "io/FilesystemEntry.h"
 #include "core/ArrayLength.h"
@@ -12,7 +12,7 @@
 #include "core/StringUtil.h"
 #include "core/Log.h"
 #include "io/Filesystem.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 #include "windirent.h"
 #include <initguid.h>

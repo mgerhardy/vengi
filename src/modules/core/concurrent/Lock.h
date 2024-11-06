@@ -10,13 +10,13 @@
 #include "core/tracy/public/tracy/Tracy.hpp"
 #endif
 
-struct SDL_mutex;
+struct SDL_Mutex;
 
 namespace core {
 
 class core_thread_capability("mutex") Lock {
 private:
-	mutable SDL_mutex *_mutex;
+	mutable SDL_Mutex *_mutex;
 
 public:
 #ifdef TRACY_ENABLE
@@ -37,7 +37,7 @@ public:
 	void unlock() const core_thread_release();
 	bool try_lock() const core_thread_try_acquire(true);
 
-	SDL_mutex *handle();
+	SDL_Mutex *handle();
 };
 
 #ifdef TRACY_ENABLE

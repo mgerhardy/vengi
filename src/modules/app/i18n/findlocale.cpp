@@ -27,7 +27,7 @@ from the Author.
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -128,11 +128,10 @@ static int accumulate_locstring(const char *str, FL_Locale *l) {
 
 #ifndef WIN32
 static int accumulate_env(const char *name, FL_Locale *l) {
-	char *env;
 	char *lang = nullptr;
 	char *country = nullptr;
 	char *variant = nullptr;
-	env = SDL_getenv(name);
+	const char *env = SDL_getenv(name);
 	if (env) {
 		return accumulate_locstring(env, l);
 	}

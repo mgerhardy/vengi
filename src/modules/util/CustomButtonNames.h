@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include <SDL_keycode.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_scancode.h>
 #include "core/String.h"
 
 #define CUSTOM_SDL_KEYCODE(X) SDL_SCANCODE_TO_KEYCODE((util::button::CUSTOM_SCANCODES + (X)))
@@ -12,18 +13,18 @@
 namespace util {
 namespace button {
 
-#ifdef __APPLE__
-#define KMOD_CONTROL KMOD_GUI
-#define KMOD_LCONTROL KMOD_LGUI
-#define KMOD_RCONTROL KMOD_RGUI
+#ifdef SDL_PLATFORM_APPLE
+#define SDL_KMOD_CONTROL SDL_KMOD_GUI
+#define SDL_KMOD_LCONTROL SDL_KMOD_LGUI
+#define SDL_KMOD_RCONTROL SDL_KMOD_RGUI
 #else
-#define KMOD_CONTROL KMOD_CTRL
-#define KMOD_LCONTROL KMOD_LCTRL
-#define KMOD_RCONTROL KMOD_RCTRL
+#define SDL_KMOD_CONTROL SDL_KMOD_CTRL
+#define SDL_KMOD_LCONTROL SDL_KMOD_LCTRL
+#define SDL_KMOD_RCONTROL SDL_KMOD_RCTRL
 #endif
 
 #define CUSTOM_SDL_BUTTON_OFFSET (SDL_BUTTON_X2 + 10)
-static const int32_t CUSTOM_SCANCODES               = SDL_NUM_SCANCODES + 1;
+static const int32_t CUSTOM_SCANCODES               = SDL_SCANCODE_COUNT + 1;
 static const int32_t CUSTOM_SDLK_MOUSE_LEFT         = CUSTOM_SDL_KEYCODE(SDL_BUTTON_LEFT);
 static const int32_t CUSTOM_SDLK_MOUSE_MIDDLE       = CUSTOM_SDL_KEYCODE(SDL_BUTTON_MIDDLE);
 static const int32_t CUSTOM_SDLK_MOUSE_RIGHT        = CUSTOM_SDL_KEYCODE(SDL_BUTTON_RIGHT);
@@ -59,19 +60,19 @@ static constexpr struct ModifierMapping {
 	int16_t modifier;
 	const char *name;
 } MODIFIERMAPPING[] = {
-	{KMOD_LSHIFT, "left_shift"},
-	{KMOD_RSHIFT, "right_shift"},
-	{KMOD_LCONTROL, "left_ctrl"},
-	{KMOD_RCONTROL, "right_ctrl"},
-	{KMOD_LALT, "left_alt"},
-	{KMOD_RALT, "right_alt"},
-	{KMOD_ALT, "alt"},
-	{KMOD_SHIFT, "shift"},
-	{KMOD_CONTROL, "ctrl"},
-	{KMOD_ALT | KMOD_SHIFT, "alt+shift"},
-	{KMOD_CONTROL | KMOD_SHIFT, "ctrl+shift"},
-	{KMOD_ALT | KMOD_CONTROL, "alt+ctrl"},
-	{KMOD_CONTROL | KMOD_ALT | KMOD_SHIFT, "ctrl+alt+shift"},
+	{SDL_KMOD_LSHIFT, "left_shift"},
+	{SDL_KMOD_RSHIFT, "right_shift"},
+	{SDL_KMOD_LCONTROL, "left_ctrl"},
+	{SDL_KMOD_RCONTROL, "right_ctrl"},
+	{SDL_KMOD_LALT, "left_alt"},
+	{SDL_KMOD_RALT, "right_alt"},
+	{SDL_KMOD_ALT, "alt"},
+	{SDL_KMOD_SHIFT, "shift"},
+	{SDL_KMOD_CONTROL, "ctrl"},
+	{SDL_KMOD_ALT | SDL_KMOD_SHIFT, "alt+shift"},
+	{SDL_KMOD_CONTROL | SDL_KMOD_SHIFT, "ctrl+shift"},
+	{SDL_KMOD_ALT | SDL_KMOD_CONTROL, "alt+ctrl"},
+	{SDL_KMOD_CONTROL | SDL_KMOD_ALT | SDL_KMOD_SHIFT, "ctrl+alt+shift"},
 	{0, nullptr}
 };
 

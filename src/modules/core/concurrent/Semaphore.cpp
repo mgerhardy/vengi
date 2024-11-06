@@ -3,7 +3,7 @@
  */
 
 #include "Semaphore.h"
-#include <SDL_mutex.h>
+#include <SDL3/SDL_mutex.h>
 
 namespace core {
 
@@ -16,30 +16,29 @@ Semaphore::~Semaphore() {
 }
 
 bool Semaphore::waitAndDecrease() {
-	return SDL_SemWait(_semaphore) != -1;
+	SDL_WaitSemaphore(_semaphore);
+	return true;
 }
 
 bool Semaphore::increase() {
-	return SDL_SemPost(_semaphore) != -1;
+	SDL_SignalSemaphore(_semaphore);
+	return true;
 }
 
 SemaphoreWaitState Semaphore::tryWait() {
-	const int val = SDL_SemTryWait(_semaphore);
-	if (val == -1) {
-		return SemaphoreWaitState::Error;
-	}
-	if (val == SDL_MUTEX_TIMEDOUT) {
+	const bool val = SDL_TryWaitSemaphore(_semaphore);
+	if (!val) {
 		return SemaphoreWaitState::WouldBlock;
 	}
 	return SemaphoreWaitState::Success;
 }
 
 bool Semaphore::waitTimeout(uint32_t timeout) {
-	return SDL_SemWaitTimeout(_semaphore, timeout) != -1;
+	return SDL_WaitSemaphoreTimeout(_semaphore, timeout);
 }
 
 uint32_t Semaphore::value() {
-	return SDL_SemValue(_semaphore);
+	return SDL_GetSemaphoreValue(_semaphore);
 }
 
 }

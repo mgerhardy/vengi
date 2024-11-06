@@ -2,7 +2,7 @@
 /* Do not edit. */
 
 #include "flextGL.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 
 #ifdef __cplusplus

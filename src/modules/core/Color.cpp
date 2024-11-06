@@ -24,7 +24,7 @@
 #include <glm/gtx/color_space.hpp>
 #include <glm/gtx/type_aligned.hpp>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <random>
 #include <stdio.h>
 

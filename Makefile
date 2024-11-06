@@ -289,9 +289,9 @@ update-implot:
 update-dearimgui:
 	$(call UPDATE_GIT,imgui,https://github.com/ocornut/imgui.git -b docking)
 	cp $(UPDATEDIR)/imgui.sync/im*.h $(UPDATEDIR)/imgui.sync/im*.cpp $(UPDATEDIR)/imgui.sync/misc/cpp/* src/modules/ui/dearimgui
-	cp $(UPDATEDIR)/imgui.sync/backends/imgui_impl_sdl2.* src/modules/ui/dearimgui/backends
+	cp $(UPDATEDIR)/imgui.sync/backends/imgui_impl_sdl3.* src/modules/ui/dearimgui/backends
 	cp $(UPDATEDIR)/imgui.sync/backends/imgui_impl_opengl3* src/modules/ui/dearimgui/backends
-	cp $(UPDATEDIR)/imgui.sync/examples/example_sdl2_opengl3/main.cpp src/modules/ui/dearimgui/backends/example_sdl2_opengl3.cpp
+	cp $(UPDATEDIR)/imgui.sync/examples/example_sdl3_opengl3/main.cpp src/modules/ui/dearimgui/backends/example_sdl3_opengl3.cpp
 	cp $(UPDATEDIR)/imgui.sync/misc/fonts/binary_to_compressed_c.cpp tools/binary_to_compressed_c
 	cp $(UPDATEDIR)/imgui.sync/misc/freetype/* src/modules/ui/dearimgui/misc/freetype
 	mv src/modules/ui/dearimgui/imgui_demo.cpp src/tests/testimgui/Demo.cpp
@@ -308,15 +308,15 @@ update-glm:
 	cp -r $(UPDATEDIR)/glm.sync/glm/* contrib/libs/glm/glm
 	rm contrib/libs/glm/glm/CMakeLists.txt
 
-update-sdl2:
-	$(call UPDATE_GIT,sdl2,https://github.com/libsdl-org/SDL.git -b SDL2)
-	rm -rf contrib/libs/sdl2/src/* contrib/libs/sdl2/include/* contrib/libs/sdl2/cmake/*
-	cp -r $(UPDATEDIR)/sdl2.sync/CMakeLists.txt contrib/libs/sdl2
-	cp -r $(UPDATEDIR)/sdl2.sync/*.cmake.in contrib/libs/sdl2
-	cp -r $(UPDATEDIR)/sdl2.sync/src/* contrib/libs/sdl2/src
-	cp -r $(UPDATEDIR)/sdl2.sync/wayland-protocols/* contrib/libs/sdl2/wayland-protocols
-	cp -r $(UPDATEDIR)/sdl2.sync/include/* contrib/libs/sdl2/include
-	cp -r $(UPDATEDIR)/sdl2.sync/cmake/* contrib/libs/sdl2/cmake
+update-sdl3:
+	$(call UPDATE_GIT,sdl3,https://github.com/libsdl-org/SDL.git -b main)
+	rm -rf contrib/libs/sdl3/src/* contrib/libs/sdl3/include/* contrib/libs/sdl3/cmake/*
+	cp -r $(UPDATEDIR)/sdl3.sync/CMakeLists.txt contrib/libs/sdl3
+	cp -r $(UPDATEDIR)/sdl3.sync/cmake/*.cmake.in contrib/libs/sdl3/cmake
+	cp -r $(UPDATEDIR)/sdl3.sync/src/* contrib/libs/sdl3/src
+	cp -r $(UPDATEDIR)/sdl3.sync/wayland-protocols/* contrib/libs/sdl3/wayland-protocols
+	cp -r $(UPDATEDIR)/sdl3.sync/include/* contrib/libs/sdl3/include
+	cp -r $(UPDATEDIR)/sdl3.sync/cmake/* contrib/libs/sdl3/cmake
 
 update-lzfse:
 	$(call UPDATE_GIT,lzfse,git@github.com:lzfse/lzfse.git)

@@ -6,6 +6,7 @@
 #include "core/Common.h"
 #include "core/FourCC.h"
 #include "core/Log.h"
+#include "core/RGBA.h"
 #include "core/ScopedPtr.h"
 #include "core/StandardLib.h"
 #include "core/StringUtil.h"

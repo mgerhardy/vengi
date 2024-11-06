@@ -10,9 +10,9 @@
 #include "core/Trace.h"
 
 #include <stdint.h>
-#include <SDL_platform.h>
+#include <SDL3/SDL_platform.h>
 
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif

@@ -6,7 +6,7 @@
 #include "core/ArrayLength.h"
 #include "core/Common.h"
 #include "core/StandardLib.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <ctype.h>
 #include <glm/vec3.hpp>
 #include <math.h>

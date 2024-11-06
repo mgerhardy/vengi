@@ -26,7 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>   // stat()
 #endif
-#ifdef __APPLE__
+#ifdef SDL_PLATFORM_APPLE
 #include <sys/sysctl.h>
 #endif
 
@@ -928,7 +928,7 @@ void    ImOsOpenInShell(const char* path)
     ImPathFixSeparatorsForCurrentOS(command.c_str());
     ::ShellExecuteA(NULL, "open", command.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 #else
-#if __APPLE__
+#if SDL_PLATFORM_APPLE
     const char* open_executable = "open";
 #else
     const char* open_executable = "xdg-open";
@@ -1008,7 +1008,7 @@ bool    ImOsIsDebuggerPresent()
         debugger_pid = atoi(tracer_pid);
     }
     return debugger_pid != 0;
-#elif defined(__APPLE__)
+#elif defined(SDL_PLATFORM_APPLE)
     // https://stackoverflow.com/questions/2200277/detecting-debugger-on-mac-os-x
     int                 junk;
     int                 mib[4];

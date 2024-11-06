@@ -73,7 +73,7 @@ void popupAbout(const std::function<void()> &customTabs, bool isNewVersionAvaila
 					ImGui::URLItem("meshoptimizer", "https://github.com/zeux/meshoptimizer", urlIconWidth);
 					ImGui::URLItem("ogt_vox", "https://github.com/jpaver/opengametools", urlIconWidth);
 					ImGui::URLItem("polyvox", "http://www.volumesoffun.com/", urlIconWidth);
-					ImGui::URLItem("SDL2", "https://github.com/libsdl-org/SDL", urlIconWidth);
+					ImGui::URLItem("SDL3", "https://github.com/libsdl-org/SDL", urlIconWidth);
 					ImGui::URLItem("stb/SOIL2", "https://github.com/SpartanJ/SOIL2", urlIconWidth);
 					ImGui::URLItem("tinygettext", "https://github.com/tinygettext/tinygettext/", urlIconWidth);
 					ImGui::URLItem("tinygltf", "https://github.com/syoyo/tinygltf", urlIconWidth);

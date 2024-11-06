@@ -3,31 +3,32 @@
  */
 
 #include "Atomic.h"
+#include <SDL3/SDL_atomic.h>
 
 namespace core {
 
 AtomicBool::AtomicBool(bool value) {
-	SDL_AtomicSet(&_value, (int)value);
+	SDL_SetAtomicInt(&_value, (int)value);
 }
 
 AtomicBool::operator bool() const {
-	return SDL_AtomicGet(const_cast<SDL_atomic_t*>(&_value)) == 1;
+	return SDL_GetAtomicInt(const_cast<SDL_AtomicInt*>(&_value)) == 1;
 }
 
 bool AtomicBool::compare_exchange(bool expectedVal, bool newVal) {
-	return (bool)SDL_AtomicCAS(&_value, (int)expectedVal, (int)newVal);
+	return (bool)SDL_CompareAndSwapAtomicInt(&_value, (int)expectedVal, (int)newVal);
 }
 
 bool AtomicBool::exchange(bool rhs) {
-	return (bool)SDL_AtomicSet(&_value, rhs);
+	return (bool)SDL_SetAtomicInt(&_value, rhs);
 }
 
 void AtomicBool::operator=(bool rhs) {
-	SDL_AtomicSet(&_value, (int)rhs);
+	SDL_SetAtomicInt(&_value, (int)rhs);
 }
 
 void AtomicBool::operator=(const AtomicBool& rhs) {
-	SDL_AtomicSet(&_value, SDL_AtomicGet(const_cast<SDL_atomic_t*>(&rhs._value)));
+	SDL_SetAtomicInt(&_value, SDL_GetAtomicInt(const_cast<SDL_AtomicInt*>(&rhs._value)));
 }
 
 bool AtomicBool::operator==(bool rhs) const {
@@ -39,27 +40,27 @@ bool AtomicBool::operator==(const AtomicBool& rhs) const {
 }
 
 AtomicInt::AtomicInt(int value) {
-	SDL_AtomicSet(&_value, value);
+	SDL_SetAtomicInt(&_value, value);
 }
 
 AtomicInt::operator int() const {
-	return SDL_AtomicGet(const_cast<SDL_atomic_t*>(&_value));
+	return SDL_GetAtomicInt(const_cast<SDL_AtomicInt*>(&_value));
 }
 
 int AtomicInt::exchange(int rhs) {
-	return SDL_AtomicSet(&_value, rhs);
+	return SDL_SetAtomicInt(&_value, rhs);
 }
 
 bool AtomicInt::compare_exchange(int expectedVal, int newVal) {
-	return (bool)SDL_AtomicCAS(&_value, expectedVal, newVal);
+	return (bool)SDL_CompareAndSwapAtomicInt(&_value, expectedVal, newVal);
 }
 
 void AtomicInt::operator=(int rhs) {
-	SDL_AtomicSet(&_value, rhs);
+	SDL_SetAtomicInt(&_value, rhs);
 }
 
 void AtomicInt::operator=(const AtomicInt& rhs) {
-	SDL_AtomicSet(&_value, SDL_AtomicGet(const_cast<SDL_atomic_t*>(&rhs._value)));
+	SDL_SetAtomicInt(&_value, SDL_GetAtomicInt(const_cast<SDL_AtomicInt*>(&rhs._value)));
 }
 
 bool AtomicInt::operator==(int rhs) const {
@@ -71,21 +72,21 @@ bool AtomicInt::operator==(const AtomicInt& rhs) const {
 }
 
 AtomicInt& AtomicInt::operator--() {
-	SDL_AtomicAdd(&_value, -1);
+	SDL_AddAtomicInt(&_value, -1);
 	return *this;
 }
 
 AtomicInt& AtomicInt::operator++() {
-	SDL_AtomicAdd(&_value, 1);
+	SDL_AddAtomicInt(&_value, 1);
 	return *this;
 }
 
 int AtomicInt::decrement(int value) {
-	return SDL_AtomicAdd(&_value, -value);
+	return SDL_AddAtomicInt(&_value, -value);
 }
 
 int AtomicInt::increment(int value) {
-	return SDL_AtomicAdd(&_value, value);
+	return SDL_AddAtomicInt(&_value, value);
 }
 
 }

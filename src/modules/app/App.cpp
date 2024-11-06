@@ -22,9 +22,9 @@
 #include "io/Stream.h"
 #include "metric/MetricFacade.h"
 #include "util/VarUtil.h"
-#include <SDL.h>
-#include <SDL_messagebox.h>
-#include <SDL_cpuinfo.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_messagebox.h>
+#include <SDL3/SDL_cpuinfo.h>
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
@@ -53,10 +53,10 @@ const core::String &loadingDocument() {
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
-#if defined(__WIN32__)
+#if defined(SDL_PLATFORM_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#elif defined(__LINUX__) || defined(__MACOSX__) || defined(__EMSCRIPTEN__)
+#elif defined(SDL_PLATFORM_LINUX) || defined(SDL_PLATFORM_MACOS) || defined(__EMSCRIPTEN__)
 #include <sys/utsname.h>
 #endif
 
@@ -114,24 +114,24 @@ App::App(const io::FilesystemPtr &filesystem, const core::TimeProviderPtr &timeP
 	std::fesetround(FE_TONEAREST);
 #endif
 
-#if defined(__WIN32__)
+#if defined(SDL_PLATFORM_WIN32)
 	_osName = "Windows";
-#elif defined(__MACOSX__)
+#elif defined(SDL_PLATFORM_MACOS)
 	_osName = "MacOSX";
-#elif defined(__LINUX__)
+#elif defined(SDL_PLATFORM_LINUX)
 	_osName = "Linux";
 #elif defined(__EMSCRIPTEN__)
 	_osName = "Emscripten";
 #endif
 
-#if defined(__WIN32__)
+#if defined(SDL_PLATFORM_WIN32)
 	OSVERSIONINFOA osInfo;
 	osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
 	::GetVersionExA(&osInfo);
 	_osVersion = core::string::format("%i.%i.%i", (int)osInfo.dwMajorVersion, (int)osInfo.dwMinorVersion,
 									  (int)osInfo.dwBuildNumber);
 	_pid = _getpid();
-#elif defined(__LINUX__) || defined(__MACOSX__) || defined(__EMSCRIPTEN__)
+#elif defined(SDL_PLATFORM_LINUX) || defined(SDL_PLATFORM_MACOS) || defined(__EMSCRIPTEN__)
 	struct utsname details;
 	if (uname(&details) == 0) {
 		_osVersion = core::string::format("%s %s", details.sysname, details.machine);
@@ -220,7 +220,7 @@ void App::remBlocker(AppState blockedState) {
 }
 
 bool App::isRunning(int pid) const {
-#ifdef __WIN32__
+#ifdef SDL_PLATFORM_WIN32
 	HANDLE process = OpenProcess(SYNCHRONIZE, FALSE, pid);
 	if (process == nullptr) {
 		return false;
@@ -309,13 +309,13 @@ void App::onFrame() {
 				}
 				SDL_MessageBoxButtonData buttons[3];
 				core_memset(&buttons, 0, sizeof(buttons));
-				buttons[0].buttonid = 0;
+				buttons[0].buttonID = 0;
 				buttons[0].text = "Reset";
 				buttons[1].flags = SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT;
-				buttons[1].buttonid = 1;
+				buttons[1].buttonID = 1;
 				buttons[1].text = "Continue";
 				buttons[2].flags = SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT;
-				buttons[2].buttonid = 2;
+				buttons[2].buttonID = 2;
 				buttons[2].text = "Upload";
 				messageboxdata.buttons = buttons;
 				int buttonId = -1;
@@ -611,7 +611,7 @@ void App::onBeforeInit() {
 AppState App::onInit() {
 	Log::debug("Initialize sdl");
 
-	SDL_Init(SDL_INIT_TIMER | SDL_INIT_EVENTS);
+	SDL_Init(SDL_INIT_EVENTS);
 	Log::debug("Initialize the threadpool");
 	_threadPool->init();
 

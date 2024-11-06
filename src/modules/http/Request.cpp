@@ -11,7 +11,7 @@
 #include "core/Var.h"
 #include "engine-config.h"
 
-#if __WINDOWS__
+#if SDL_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN (1)
 #include <windows.h>
 #include <winhttp.h>
@@ -25,7 +25,7 @@
 
 namespace http {
 
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 static void printLastError(const char *ctx) {
 	DWORD errnum = ::GetLastError();
 	char buffer[512] = "";
@@ -82,7 +82,7 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *use
 #endif
 
 bool Request::supported() {
-#if __WINDOWS__
+#if SDL_PLATFORM_WINDOWS
 	return true;
 #elif USE_CURL
 	return true;
@@ -118,7 +118,7 @@ void Request::noCache() {
 
 bool Request::execute(io::WriteStream &stream, int *statusCode, core::StringMap<core::String> *outheaders) {
 	Log::debug("Starting http request for %s", _url.c_str());
-#if __WINDOWS__
+#if SDL_PLATFORM_WINDOWS
 	// Initialize WinHTTP and create a session
 	HINTERNET hSession =
 		WinHttpOpen(nullptr, WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);

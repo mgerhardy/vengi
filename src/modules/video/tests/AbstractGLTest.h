@@ -12,7 +12,7 @@
 #include "video/Renderer.h"
 #include "video/ShaderManager.h"
 #include "voxel/SurfaceExtractor.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace video {
 
@@ -62,7 +62,7 @@ public:
 		core::Var::get(cfg::ClientVSync, "false");
 		core::Var::get(cfg::ClientDebugSeverity, "3");
 		app::AbstractTest::SetUp();
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 		GTEST_SKIP() << "Skipping because there are problems in the pipeline when running this headless";
 #else
 		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -71,7 +71,7 @@ public:
 		}
 		video::setup();
 		video::construct();
-		_window = SDL_CreateWindow("test", 0, 0, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+		_window = SDL_CreateWindow("test", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
 		if (_window != nullptr) {
 			_ctx = video::createContext(_window);
 			if (_ctx == nullptr) {

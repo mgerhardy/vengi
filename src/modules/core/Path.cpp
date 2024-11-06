@@ -6,7 +6,7 @@
 #include "core/Common.h"
 #include "core/String.h"
 #include "core/StringUtil.h"
-#include <SDL_platform.h>
+#include <SDL3/SDL_platform.h>
 
 namespace core {
 
@@ -19,7 +19,7 @@ Path::Path(core::String &&path) : _path(core::move(path)) {
 }
 
 char Path::separator() const {
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 	return '\\';
 #else
 	return '/';
@@ -27,7 +27,7 @@ char Path::separator() const {
 }
 
 core::String Path::toNativePath() const {
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 	core::String path = _path;
 	core::string::replaceAllChars(path, '/', '\\');
 	return path;
@@ -40,7 +40,7 @@ char Path::driveLetter() const {
 	if (_path.size() >= 2 && _path[1] == ':') {
 		return core::string::toUpper(_path[0]);
 	}
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 	return 'C';
 #else
 	return '/';
@@ -109,7 +109,7 @@ Path Path::replaceExtension(const core::String &newExtension) const {
 
 bool Path::isRelativePath() const {
 	const size_t size = _path.size();
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 	if (size < 2) {
 		return true;
 	}

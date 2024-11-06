@@ -10,7 +10,7 @@
 #include "io/FormatDescription.h"
 #include "palette/PaletteFormatDescription.h"
 #include "voxelformat/VolumeFormat.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 FormatPrinter::FormatPrinter(const io::FilesystemPtr &filesystem, const core::TimeProviderPtr &timeProvider)
 	: Super(filesystem, timeProvider) {

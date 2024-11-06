@@ -2,9 +2,9 @@
  * @file
  */
 
-#include <SDL_platform.h>
+#include <SDL3/SDL_platform.h>
 
-#if !defined(__LINUX__) && !defined(__MACOSX__) && !defined(__WINDOWS__) && !defined(__EMSCRIPTEN__)
+#if !defined(SDL_PLATFORM_LINUX) && !defined(SDL_PLATFORM_MACOS) && !defined(SDL_PLATFORM_WINDOWS) && !defined(__EMSCRIPTEN__)
 #include "io/Filesystem.h"
 
 namespace io {

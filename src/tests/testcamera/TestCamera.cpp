@@ -6,7 +6,7 @@
 #include "testcore/TestAppMain.h"
 #include "core/Log.h"
 #include "util/CustomButtonNames.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 TestCamera::TestCamera(const io::FilesystemPtr& filesystem, const core::TimeProviderPtr& timeProvider) :
 		Super(filesystem, timeProvider) {
@@ -127,7 +127,7 @@ app::AppState TestCamera::onRunning() {
 	app::AppState state = Super::onRunning();
 	video::Camera& c = _renderCamera[_targetCamera];
 	const SDL_Keymod mods = SDL_GetModState();
-	if (mods & KMOD_SHIFT) {
+	if (mods & SDL_KMOD_SHIFT) {
 		c.rotate(glm::vec3(_mouseRelativePos.y, _mouseRelativePos.x, 0.0f) * _rotationSpeed->floatVal());
 	}
 	camera().setTarget(c.worldPosition());
@@ -149,9 +149,9 @@ app::AppState TestCamera::onCleanup() {
 
 bool TestCamera::onMouseWheel(void *windowHandle, float x, float y, int32_t mouseId) {
 	const SDL_Keymod mods = SDL_GetModState();
-	if (mods & KMOD_SHIFT) {
+	if (mods & SDL_KMOD_SHIFT) {
 		video::Camera& c = _renderCamera[_targetCamera];
-		if (mods & KMOD_CONTROL) {
+		if (mods & SDL_KMOD_CONTROL) {
 			c.setNearPlane(c.nearPlane() + (float)y);
 		} else {
 			c.setFarPlane(c.farPlane() + (float)y);
@@ -179,7 +179,7 @@ bool TestCamera::onKeyPress(void *windowHandle, int32_t key, int16_t modifier) {
 	}
 
 	video::Camera& c = _renderCamera[_targetCamera];
-	if (modifier & KMOD_SHIFT) {
+	if (modifier & SDL_KMOD_SHIFT) {
 		int delta = 0;
 		if (key == SDLK_MINUS || key == SDLK_KP_MINUS) {
 			delta = -1;
@@ -187,7 +187,7 @@ bool TestCamera::onKeyPress(void *windowHandle, int32_t key, int16_t modifier) {
 			delta = 1;
 		}
 
-		if (modifier & KMOD_CONTROL) {
+		if (modifier & SDL_KMOD_CONTROL) {
 			c.setNearPlane(c.nearPlane() + (float)delta);
 		} else {
 			c.setFarPlane(c.farPlane() + (float)delta);

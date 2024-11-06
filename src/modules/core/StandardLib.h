@@ -7,15 +7,15 @@
 #include <string.h>
 
 #ifndef SDLCALL
-#if defined(__WIN32__) && !defined(__GNUC__)
+#if defined(SDL_PLATFORM_WIN32) && !defined(__GNUC__)
 #define SDLCALL __cdecl
 #else
 #define SDLCALL
 #endif
 #endif
 
-extern "C" void SDLCALL SDL_SIMDFree(void *ptr);
-extern "C" void *SDLCALL SDL_SIMDAlloc(const size_t len);
+extern "C" void SDLCALL SDL_aligned_free(void *mem);
+extern "C" void *SDLCALL SDL_aligned_alloc(size_t alignment, size_t size);
 extern "C" void *SDLCALL SDL_malloc(size_t size);
 extern "C" void *SDLCALL SDL_realloc(void *mem, size_t size);
 extern "C" void SDLCALL SDL_free(void *mem);
@@ -23,6 +23,7 @@ extern "C" void *SDLCALL SDL_memset(void *dst, int c, size_t len);
 extern "C" void *SDLCALL SDL_memcpy(void *dst, const void *src, size_t len);
 extern "C" int SDLCALL SDL_memcmp(const void *s1, const void *s2, size_t len);
 extern "C" char *SDLCALL SDL_strdup(const char *str);
+extern "C" size_t SDLCALL SDL_GetSIMDAlignment(void);
 
 #ifndef core_malloc
 #define core_malloc SDL_malloc
@@ -41,11 +42,11 @@ extern "C" char *SDLCALL SDL_strdup(const char *str);
 #endif
 
 #ifndef core_aligned_malloc
-#define core_aligned_malloc SDL_SIMDAlloc
+#define core_aligned_malloc(x) SDL_aligned_alloc(SDL_GetSIMDAlignment(), (x))
 #endif
 
 #ifndef core_aligned_free
-#define core_aligned_free SDL_SIMDFree
+#define core_aligned_free SDL_aligned_free
 #endif
 
 #ifndef core_memset

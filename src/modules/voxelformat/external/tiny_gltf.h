@@ -1893,7 +1893,7 @@ void JsonParse(JsonDocument &doc, const char *str, size_t length,
 }  // namespace detail
 }  // namespace tinygltf
 
-#ifdef __APPLE__
+#ifdef SDL_PLATFORM_APPLE
 #include "TargetConditionals.h"
 #endif
 

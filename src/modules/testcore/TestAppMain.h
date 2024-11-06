@@ -3,7 +3,7 @@
  */
 
 #pragma once
-#include <SDL_main.h>
+#include <SDL3/SDL_main.h>
 #include "io/Filesystem.h"
 #include "core/TimeProvider.h"
 

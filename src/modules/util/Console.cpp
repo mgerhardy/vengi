@@ -17,7 +17,7 @@
 #include "core/Tokenizer.h"
 #include "command/CommandHandler.h"
 #include "VarUtil.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace util {
 
@@ -29,8 +29,8 @@ Console::~Console() {
 }
 
 void Console::registerOutputCallbacks() {
-	SDL_LogGetOutputFunction((SDL_LogOutputFunction*)&_logFunction, &_logUserData);
-	SDL_LogSetOutputFunction((SDL_LogOutputFunction)logConsole, this);
+	SDL_GetLogOutputFunction((SDL_LogOutputFunction*)&_logFunction, &_logUserData);
+	SDL_SetLogOutputFunction((SDL_LogOutputFunction)logConsole, this);
 }
 
 void Console::construct() {
@@ -65,7 +65,7 @@ void Console::shutdown() {
 
 	command::Command::unregisterCommand("con_clear");
 	command::Command::unregisterCommand("con_history");
-	SDL_LogSetOutputFunction((SDL_LogOutputFunction)_logFunction, _logUserData);
+	SDL_SetLogOutputFunction((SDL_LogOutputFunction)_logFunction, _logUserData);
 }
 
 void Console::printHistory() {
@@ -215,7 +215,7 @@ void Console::logConsole(void *userdata, int category, Log::Level priority, cons
 	if (priority < Log::Level::None || priority > Log::Level::Error) {
 		return;
 	}
-	if (priority < (Log::Level)SDL_LogGetPriority(category)) {
+	if (priority < (Log::Level)SDL_GetLogPriority(category)) {
 		return;
 	}
 	Console* console = (Console*)userdata;

@@ -3,7 +3,7 @@
  */
 
 #include "Thread.h"
-#include <SDL_thread.h>
+#include <SDL3/SDL_thread.h>
 
 namespace core {
 

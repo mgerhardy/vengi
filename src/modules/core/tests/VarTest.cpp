@@ -2,6 +2,8 @@
  * @file
  */
 
+#include <SDL2/SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <gtest/gtest.h>
 #include "core/Var.h"
 #include "core/StringUtil.h"
@@ -82,7 +84,7 @@ TEST_F(VarTest, testPriorityFromFile) {
 }
 
 TEST_F(VarTest, testPriorityFromEnv) {
-	SDL_setenv("test", "env", 1);
+	SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "test", "env", true);
 
 	// onConstruct
 	Var::get("test", "initialvalue");
@@ -91,11 +93,11 @@ TEST_F(VarTest, testPriorityFromEnv) {
 	// load appname.vars
 	Var::get("test", "file", CV_FROMFILE);
 	EXPECT_EQ(Var::get("test")->strVal(), "env") << "Expected to still have the value from env";
-	SDL_setenv("test", "", 1);
+	SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "test", "", true);
 }
 
 TEST_F(VarTest, testPriorityEnvOverrideFromCmd) {
-	SDL_setenv("test", "env", 1);
+	SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "test", "env", true);
 
 	// onConstruct
 	Var::get("test", "initialvalue");
@@ -104,7 +106,7 @@ TEST_F(VarTest, testPriorityEnvOverrideFromCmd) {
 	// onConstruct argument parsing
 	Var::get("test", "commandline", CV_FROMCOMMANDLINE);
 	EXPECT_EQ(Var::get("test")->strVal(), "commandline") << "Commandline should have the highest priority";
-	SDL_setenv("test", "", 1);
+	SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "test", "", true);
 }
 
 TEST_F(VarTest, testHistory) {

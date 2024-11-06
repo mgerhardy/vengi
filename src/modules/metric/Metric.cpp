@@ -7,7 +7,7 @@
 #include "core/ConfigVar.h"
 #include "core/Log.h"
 #include "core/Var.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <stdio.h>
 #include <string.h>
 

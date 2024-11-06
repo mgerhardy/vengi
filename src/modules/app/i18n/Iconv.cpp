@@ -22,7 +22,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 #include "Iconv.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 namespace app {
 

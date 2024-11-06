@@ -6,14 +6,14 @@
 #include "core/ArrayLength.h"
 #include "core/Log.h"
 #include "io/Stream.h"
-#include <SDL_assert.h>
-#include <SDL_platform.h>
+#include <SDL3/SDL_assert.h>
+#include <SDL3/SDL_platform.h>
 
 #include <fcntl.h>
 #include <string.h>
 
-#if defined(__WINDOWS__)
-#include <SDL.h>
+#if defined(SDL_PLATFORM_WINDOWS)
+#include <SDL3/SDL.h>
 #define WIN32_LEAN_AND_MEAN
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -24,7 +24,7 @@
 #include <io.h>
 #include <shellapi.h>
 #include <shlobj.h>
-#elif defined(__LINUX__) or defined(__MACOSX__)
+#elif defined(SDL_PLATFORM_LINUX) or defined(SDL_PLATFORM_MACOS)
 #include <dirent.h>
 #include <dlfcn.h>
 #include <errno.h>
@@ -43,7 +43,7 @@ namespace core {
 
 int Process::exec(const core::String &command, const core::DynamicArray<core::String> &arguments,
 				  const char *workingDirectory, io::WriteStream *stream) {
-#if defined(__LINUX__) || defined(__MACOSX__)
+#if defined(SDL_PLATFORM_LINUX) || defined(SDL_PLATFORM_MACOS)
 	int stdoutfd[2];
 	if (::pipe(stdoutfd) < 0) {
 		Log::error("pipe failed: %s", strerror(errno));
@@ -173,7 +173,7 @@ int Process::exec(const core::String &command, const core::DynamicArray<core::St
 
 	// success
 	return 0;
-#elif __WINDOWS__
+#elif SDL_PLATFORM_WINDOWS
 	core::String cmd = command;
 	if (!arguments.empty()) {
 		cmd.append(" ");

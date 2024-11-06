@@ -26,7 +26,7 @@
 #include "video/Trace.h"
 #include "video/Types.h"
 #include "video/gl/flextGL.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <glm/common.hpp>
 #include <glm/fwd.hpp>
 #include <glm/gtc/constants.hpp>
@@ -1668,7 +1668,7 @@ int fetchAttributes(Id program, ShaderAttributes &attributes, const core::String
 }
 
 void destroyContext(RendererContext &context) {
-	SDL_GL_DeleteContext((SDL_GLContext)context);
+	SDL_GL_DestroyContext((SDL_GLContext)context);
 }
 
 RendererContext createContext(SDL_Window *window) {
@@ -1794,18 +1794,21 @@ bool init(int windowWidth, int windowHeight, float scaleFactor) {
 
 	const bool vsync = core::Var::getSafe(cfg::ClientVSync)->boolVal();
 	if (vsync) {
-		if (SDL_GL_SetSwapInterval(-1) == -1) {
-			if (SDL_GL_SetSwapInterval(1) == -1) {
+		if (!SDL_GL_SetSwapInterval(-1)) {
+			if (!SDL_GL_SetSwapInterval(1)) {
 				Log::warn("Could not activate vsync: %s", SDL_GetError());
 			}
 		}
 	} else {
 		SDL_GL_SetSwapInterval(0);
 	}
-	if (SDL_GL_GetSwapInterval() == 0) {
-		Log::debug("Deactivated vsync");
-	} else {
-		Log::debug("Activated vsync");
+	int interval = 0;
+	if (SDL_GL_GetSwapInterval(&interval)) {
+		if (interval == 0) {
+			Log::debug("Deactivated vsync");
+		} else {
+			Log::debug("Activated vsync");
+		}
 	}
 
 	if (useFeature(Feature::DirectStateAccess)) {

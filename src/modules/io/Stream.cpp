@@ -8,7 +8,7 @@
 #include "core/UTF8.h"
 #include "core/collection/DynamicArray.h"
 #include "core/Endian.h"
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <fcntl.h>
 #include <stdio.h>
 

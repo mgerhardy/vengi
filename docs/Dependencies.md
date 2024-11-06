@@ -9,7 +9,7 @@
 * development headers/libs for
   * glm
   * lua >= 5.4
-  * sdl2 > 2.0.16
+  * sdl3 >= 3.1.3
   * gtest (and gmock)
   * freetype2 (optional)
   * libjpeg (optional but recommended)
@@ -27,17 +27,17 @@ apt-get install binutils-dev libunwind-dev libglm-dev lua5.4 liblua5.4-dev libfr
 ## Arch
 
 ```bash
-pacman -Sy git make cmake ninja sdl2 clang
+pacman -Sy git make cmake ninja sdl3 clang
 ```
 
 ## Brew
 
 ```bash
-brew install sdl2 jpeg-turbo freetype cmake ninja pkg-config
+brew install sdl3 jpeg-turbo freetype cmake ninja pkg-config
 ```
 
 ## Windows
 
 ```bash
-vcpkg install pkg-config sdl2 libjpeg-turbo lua glm glslang gtest freetype
+vcpkg install pkg-config sdl3 libjpeg-turbo lua glm glslang gtest freetype
 ```

@@ -1101,7 +1101,7 @@ CODE
 #endif
 
 // [Apple] OS specific includes
-#if defined(__APPLE__)
+#if defined(SDL_PLATFORM_APPLE)
 #include <TargetConditionals.h>
 #endif
 
@@ -1450,8 +1450,8 @@ ImGuiIO::ImGuiIO()
 
     // Miscellaneous options
     MouseDrawCursor = false;
-#ifdef __APPLE__
-    ConfigMacOSXBehaviors = true;  // Set Mac OS X style defaults based on __APPLE__ compile time flag
+#ifdef SDL_PLATFORM_APPLE
+    ConfigMacOSXBehaviors = true;  // Set Mac OS X style defaults based on SDL_PLATFORM_APPLE compile time flag
 #else
     ConfigMacOSXBehaviors = false;
 #endif
@@ -20594,7 +20594,7 @@ static void Platform_SetClipboardTextFn_DefaultImpl(ImGuiContext*, const char* t
     ::CloseClipboard();
 }
 
-#elif defined(__APPLE__) && TARGET_OS_OSX && defined(IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
+#elif defined(SDL_PLATFORM_APPLE) && TARGET_OS_OSX && defined(IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
 
 #include <Carbon/Carbon.h>  // Use old API to avoid need for separate .mm file
 static PasteboardRef main_clipboard = 0;
@@ -20671,7 +20671,7 @@ static void Platform_SetClipboardTextFn_DefaultImpl(ImGuiContext* ctx, const cha
 //-----------------------------------------------------------------------------
 
 #ifndef IMGUI_DISABLE_DEFAULT_SHELL_FUNCTIONS
-#if defined(__APPLE__) && TARGET_OS_IPHONE
+#if defined(SDL_PLATFORM_APPLE) && TARGET_OS_IPHONE
 #define IMGUI_DISABLE_DEFAULT_SHELL_FUNCTIONS
 #endif
 
@@ -20695,7 +20695,7 @@ static bool Platform_OpenInShellFn_DefaultImpl(ImGuiContext*, const char* path)
 #include <unistd.h>
 static bool Platform_OpenInShellFn_DefaultImpl(ImGuiContext*, const char* path)
 {
-#if defined(__APPLE__)
+#if defined(SDL_PLATFORM_APPLE)
     const char* args[] { "open", "--", path, NULL };
 #else
     const char* args[] { "xdg-open", path, NULL };

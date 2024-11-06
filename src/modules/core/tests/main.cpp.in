@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "core/Log.h"
 
 char **_argv;

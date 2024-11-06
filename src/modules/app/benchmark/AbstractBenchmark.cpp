@@ -8,7 +8,7 @@
 #include "command/Command.h"
 #include "io/Filesystem.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace app {
 

@@ -648,7 +648,7 @@ static GL3WglProc get_proc(const char *proc)
         res = (GL3WglProc)GetProcAddress(libgl, proc);
     return res;
 }
-#elif defined(__APPLE__)
+#elif defined(SDL_PLATFORM_APPLE)
 #include <dlfcn.h>
 
 static void *libgl;

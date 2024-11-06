@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include <SDL_atomic.h>
+#include <SDL3/SDL_atomic.h>
 
 namespace core {
 
 class AtomicBool {
 private:
-	SDL_atomic_t _value { 0 };
+	SDL_AtomicInt _value { 0 };
 public:
 	AtomicBool(bool value);
 
@@ -28,7 +28,7 @@ public:
 
 class AtomicInt {
 private:
-	SDL_atomic_t _value;
+	SDL_AtomicInt _value;
 public:
 	AtomicInt(int value = 0);
 
@@ -56,34 +56,34 @@ private:
 	void* _ptr;
 public:
 	AtomicPtr(T* value = nullptr) {
-		SDL_AtomicSetPtr(&_ptr, (void*)value);
+		SDL_SetAtomicPointer(&_ptr, (void*)value);
 	}
 
 	operator T*() {
-		return (T*)SDL_AtomicGetPtr(&_ptr);
+		return (T*)SDL_GetAtomicPointer(&_ptr);
 	}
 
 	operator const T*() const {
-		return (const T*)SDL_AtomicGetPtr(const_cast<void**>(&_ptr));
+		return (const T*)SDL_GetAtomicPointer(const_cast<void**>(&_ptr));
 	}
 
 	T* exchange(T* value) {
-		return (T*)SDL_AtomicSetPtr(&_ptr, (void*)value);
+		return (T*)SDL_SetAtomicPointer(&_ptr, (void*)value);
 	}
 
 	T* compare_exchange(T* expectedPtr, T* newPtr) {
-		return (T*)SDL_AtomicCASPtr(&_ptr, (void*)expectedPtr, (void*)newPtr);
+		return (T*)SDL_CompareAndSwapAtomicPointer(&_ptr, (void*)expectedPtr, (void*)newPtr);
 	}
 
 	void operator=(T* value) {
-		SDL_AtomicSetPtr(&_ptr, (void*)value);
+		SDL_SetAtomicPointer(&_ptr, (void*)value);
 	}
 
 	void operator=(const AtomicPtr& value) {
 		if (&value == this) {
 			return;
 		}
-		SDL_AtomicSetPtr(&_ptr, value._ptr);
+		SDL_SetAtomicPointer(&_ptr, value._ptr);
 	}
 
 	bool operator==(T* value) const {

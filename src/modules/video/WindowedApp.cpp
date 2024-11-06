@@ -22,11 +22,11 @@
 #include "util/KeybindingHandler.h"
 #include "video/EventHandler.h"
 #include <glm/common.hpp>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 #include <windows.h>
-#elif __MACOSX__
+#elif SDL_PLATFORM_MACOS
 extern "C" bool isOSXDarkMode();
 #endif
 
@@ -47,7 +47,7 @@ inline void checkSDLError(const char *file, unsigned int line, const char *funct
 
 WindowedApp::WindowedApp(const io::FilesystemPtr& filesystem, const core::TimeProviderPtr& timeProvider, size_t threadPoolSize) :
 		Super(filesystem, timeProvider, threadPoolSize), _frameBufferDimension(-1), _mouseRelativePos(-1) {
-#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) || (defined(__APPLE__) && TARGET_OS_IOS)
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) || (defined(SDL_PLATFORM_APPLE) && TARGET_OS_IOS)
 	_singleWindowMode = true;
 #else
 	_singleWindowMode = false;
@@ -67,17 +67,18 @@ void WindowedApp::onAfterRunning() {
 
 bool WindowedApp::handleSDLEvent(SDL_Event& event) {
 	switch (event.type) {
-	case SDL_QUIT:
+	case SDL_EVENT_QUIT:
 		// continue to handle any other following event
 		return true;
-	case SDL_WINDOWEVENT: {
+	case SDL_EVENT_WINDOW_RESIZED:
+	case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
 		SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
 		// we must be the first to handle this - but others should get their chance, too
-		if (window == _window && (event.window.event == SDL_WINDOWEVENT_RESIZED || event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)) {
+		if (window == _window) {
 			const int w = event.window.data1;
 			const int h = event.window.data2;
 			int frameBufferWidth, frameBufferHeight;
-			SDL_GL_GetDrawableSize(_window, &frameBufferWidth, &frameBufferHeight);
+			SDL_GetWindowSizeInPixels(_window, &frameBufferWidth, &frameBufferHeight);
 			_aspect = (float)frameBufferWidth / (float)frameBufferHeight;
 			_frameBufferDimension = glm::ivec2(frameBufferWidth, frameBufferHeight);
 			_windowDimension = glm::ivec2(w, h);
@@ -85,10 +86,10 @@ bool WindowedApp::handleSDLEvent(SDL_Event& event) {
 			video::resize(w, h, scaleFactor);
 			video::viewport(0, 0, _frameBufferDimension.x, _frameBufferDimension.y);
 		}
-		if (event.window.event == SDL_WINDOWEVENT_MOVED) {
-			SDL_RaiseWindow(window);
-		}
+		break;
 	}
+	case SDL_EVENT_WINDOW_MOVED:
+		SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));
 		// fallthrough
 	default: {
 		core_trace_scoped(WindowedAppEventHandler);
@@ -168,9 +169,9 @@ void WindowedApp::onWindowClose(void *windowHandle) {
 // https://stackoverflow.com/questions/25207077/how-to-detect-if-os-x-is-in-dark-mode
 // https://wiki.archlinux.org/title/Dark_mode_switching#gsettings
 bool WindowedApp::isDarkMode() const {
-#ifdef __MACOSX__
+#ifdef SDL_PLATFORM_MACOS
 	return isOSXDarkMode();
-#elif __LINUX__
+#elif SDL_PLATFORM_LINUX
 	core::DynamicArray<core::String> arguments;
 	arguments.push_back("get");
 	arguments.push_back("org.gnome.desktop.interface");
@@ -184,7 +185,7 @@ bool WindowedApp::isDarkMode() const {
 		return core::string::icontains(output, "dark");
 	}
 	return true;
-#elif __WINDOWS__
+#elif SDL_PLATFORM_WINDOWS
 	HKEY hkey;
 	if (RegOpenKey(HKEY_CURRENT_USER, R"(Software\Microsoft\Windows\CurrentVersion\Themes\Personalize)", &hkey) == ERROR_SUCCESS) {
 		DWORD value = 0;
@@ -251,7 +252,9 @@ core::String WindowedApp::getKeyBindingsString(const char *cmd) const {
 
 SDL_Window *WindowedApp::createWindow(int width, int height, int displayIndex, uint32_t flags) {
 	const core::String windowName = fullAppname();
-	return SDL_CreateWindow(windowName.c_str(), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), width, height, flags);
+	// TODO: SDL3: set position SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex)
+	//       create the window with properties
+	return SDL_CreateWindow(windowName.c_str(), width, height, flags);
 }
 
 app::AppState WindowedApp::onInit() {
@@ -260,7 +263,7 @@ app::AppState WindowedApp::onInit() {
 		return state;
 	}
 
-	if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+	if (!SDL_Init(SDL_INIT_VIDEO)) {
 		sdlCheckError();
 		return app::AppState::InitFailure;
 	}
@@ -275,7 +278,7 @@ app::AppState WindowedApp::onInit() {
 
 	core::Singleton<video::EventHandler>::getInstance().registerObserver(this);
 
-	Log::debug("CPU count: %d", SDL_GetCPUCount());
+	Log::debug("CPU count: %d", SDL_GetNumLogicalCPUCores());
 	Log::debug("CacheLine size: %d", SDL_GetCPUCacheLineSize());
 	Log::debug("Altivec: %d", SDL_HasAltiVec());
 	Log::debug("MMX: %d", SDL_HasMMX());
@@ -286,12 +289,14 @@ app::AppState WindowedApp::onInit() {
 	Log::debug("SSE4.2: %d", SDL_HasSSE42());
 	Log::debug("AVX: %d", SDL_HasAVX());
 	Log::debug("AVX2: %d", SDL_HasAVX2());
-#if SDL_VERSION_ATLEAST(2, 0, 9)
 	Log::debug("NEON: %d", SDL_HasNEON());
-#endif
 	Log::debug("RAM: %d MB", SDL_GetSystemRAM());
 
-	const int numDisplays = core_max(0, SDL_GetNumVideoDisplays());
+	int numDisplays = 0;
+	SDL_DisplayID *displays = SDL_GetDisplays(&numDisplays);
+	if (displays != nullptr) {
+		SDL_free(displays);
+	}
 	const int displayIndex = glm::clamp(core::Var::getSafe(cfg::ClientWindowDisplay)->intVal(), 0, core_max(0, numDisplays - 1));
 	Log::debug("Try to use display %i", displayIndex);
 
@@ -313,14 +318,14 @@ app::AppState WindowedApp::onInit() {
 	SDL_Rect displayBounds;
 	displayBounds.h = displayBounds.w = displayBounds.x = displayBounds.y = 0;
 	if (_fullScreenApplication) {
-		if (SDL_GetDisplayUsableBounds(displayIndex, &displayBounds) < 0) {
+		if (!SDL_GetDisplayUsableBounds((SDL_DisplayID)displayIndex, &displayBounds)) {
 			Log::error("Failed to query usable display bounds: %s", SDL_GetError());
 			displayBounds.h = displayBounds.w = displayBounds.x = displayBounds.y = 0;
 		}
 	}
 	const core::VarPtr& highDPI = core::Var::getSafe(cfg::ClientWindowHighDPI);
 	if (highDPI->boolVal()) {
-		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+		flags |= SDL_WINDOW_HIGH_PIXEL_DENSITY;
 		Log::debug("Enable high dpi support");
 	} else {
 		Log::debug("Disable high dpi support");
@@ -352,7 +357,7 @@ app::AppState WindowedApp::onInit() {
 		SDL_MaximizeWindow(_window);
 	}
 
-	if (displayIndex != SDL_GetWindowDisplayIndex(_window)) {
+	if (displayIndex != (int)SDL_GetDisplayForWindow(_window)) {
 		Log::error("Failed to create window at display %i", displayIndex);
 	}
 
@@ -365,7 +370,7 @@ app::AppState WindowedApp::onInit() {
 	// some platforms may override or hardcode the resolution - so
 	// we have to query it here to get the actual resolution
 	int frameBufferWidth, frameBufferHeight;
-	SDL_GL_GetDrawableSize(_window, &frameBufferWidth, &frameBufferHeight);
+	SDL_GetWindowSizeInPixels(_window, &frameBufferWidth, &frameBufferHeight);
 	_aspect = (float)frameBufferWidth / (float)frameBufferHeight;
 	_frameBufferDimension = glm::ivec2(frameBufferWidth, frameBufferHeight);
 
@@ -446,7 +451,11 @@ void WindowedApp::resetKeybindings() {
 }
 
 void WindowedApp::showCursor(bool show) {
-	SDL_ShowCursor(show ? SDL_TRUE : SDL_FALSE);
+	if (show) {
+		SDL_ShowCursor();
+	} else {
+		SDL_HideCursor();
+	}
 }
 
 void WindowedApp::centerMousePosition() {
@@ -454,7 +463,7 @@ void WindowedApp::centerMousePosition() {
 }
 
 bool WindowedApp::isRelativeMouseMode() const {
-	return SDL_GetRelativeMouseMode();
+	return SDL_GetWindowRelativeMouseMode(_window);
 }
 
 bool WindowedApp::toggleRelativeMouseMode() {
@@ -466,7 +475,7 @@ bool WindowedApp::setRelativeMouseMode(bool mode) {
 	if (mode && !_allowRelativeMouseMode) {
 		mode = false;
 	}
-	SDL_SetRelativeMouseMode(mode ? SDL_TRUE : SDL_FALSE);
+	SDL_SetWindowRelativeMouseMode(_window, mode);
 	return mode;
 }
 

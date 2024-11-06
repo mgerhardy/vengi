@@ -15,7 +15,7 @@
 #include <syslog.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef SDL_PLATFORM_LINUX
 #define ANSI_COLOR_RESET "\033[0m"
 #define ANSI_COLOR_RED "\033[31m"
 #define ANSI_COLOR_GREEN "\033[32m"
@@ -102,7 +102,7 @@ const char* Log::toLogLevel(Log::Level level) {
 }
 
 void Log::setLevel(Level level) {
-	SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, (SDL_LogPriority)level);
+	SDL_SetLogPriority(SDL_LOG_CATEGORY_APPLICATION, (SDL_LogPriority)level);
 }
 
 void Log::init(const char *logfile) {
@@ -122,11 +122,11 @@ void Log::init(const char *logfile) {
 #ifdef HAVE_SYSLOG_H
 		if (!priv::_syslog) {
 			if (priv::_syslogLogCallback == nullptr) {
-				SDL_LogGetOutputFunction(&priv::_syslogLogCallback, &priv::_syslogLogCallbackUserData);
+				SDL_GetLogOutputFunction(&priv::_syslogLogCallback, &priv::_syslogLogCallbackUserData);
 			}
 			core_assert(priv::_syslogLogCallback != priv::sysLogOutputFunction);
 			openlog(nullptr, LOG_PID, LOG_USER);
-			SDL_LogSetOutputFunction(priv::sysLogOutputFunction, nullptr);
+			SDL_SetLogOutputFunction(priv::sysLogOutputFunction, nullptr);
 			priv::_syslog = true;
 		}
 #else
@@ -136,7 +136,7 @@ void Log::init(const char *logfile) {
 	} else {
 #ifdef HAVE_SYSLOG_H
 		if (priv::_syslog) {
-			SDL_LogSetOutputFunction(priv::_syslogLogCallback, priv::_syslogLogCallbackUserData);
+			SDL_SetLogOutputFunction(priv::_syslogLogCallback, priv::_syslogLogCallbackUserData);
 			priv::_syslogLogCallback = nullptr;
 			priv::_syslogLogCallbackUserData = nullptr;
 			closelog();
@@ -151,7 +151,7 @@ void Log::shutdown() {
 	// still being available here - it won't
 #ifdef HAVE_SYSLOG_H
 	if (priv::_syslog) {
-		SDL_LogSetOutputFunction(priv::_syslogLogCallback, priv::_syslogLogCallbackUserData);
+		SDL_SetLogOutputFunction(priv::_syslogLogCallback, priv::_syslogLogCallbackUserData);
 		closelog();
 		priv::_syslogLogCallback = nullptr;
 		priv::_syslogLogCallbackUserData = nullptr;

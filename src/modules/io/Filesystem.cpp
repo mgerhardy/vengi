@@ -14,8 +14,9 @@
 #include "io/FileStream.h"
 #include "io/FilesystemEntry.h"
 #include "system/System.h"
-#include <SDL.h>
-#ifndef __WINDOWS__
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_filesystem.h>
+#ifndef SDL_PLATFORM_WINDOWS
 #include <unistd.h>
 #endif
 #ifdef __EMSCRIPTEN__
@@ -42,13 +43,12 @@ bool Filesystem::init(const core::String &organisation, const core::String &appn
 	);
 #endif
 
-	char *path = SDL_GetBasePath();
+	const char *path = SDL_GetBasePath();
 	if (path == nullptr) {
 		_basePath = "";
 	} else {
 		_basePath = path;
 		normalizePath(_basePath);
-		SDL_free(path);
 	}
 
 	char *prefPath = SDL_GetPrefPath(_organisation.c_str(), _appname.c_str());
@@ -325,7 +325,7 @@ bool Filesystem::sysIsReadableDir(const core::String &name) {
 
 bool Filesystem::sysIsRelativePath(const core::String &name) {
 	const size_t size = name.size();
-#ifdef __WINDOWS__
+#ifdef SDL_PLATFORM_WINDOWS
 	if (size < 2) {
 		return true;
 	}

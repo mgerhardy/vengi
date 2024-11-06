@@ -8,6 +8,7 @@
 #include "core/StringUtil.h"
 #include "core/Trace.h"
 #include "core/Var.h"
+#include <SDL3/SDL.h>
 
 #define NOTIFY_PADDING_X 20.0f		  // Bottom-left X padding
 #define NOTIFY_PADDING_Y 20.0f		  // Bottom-left Y padding

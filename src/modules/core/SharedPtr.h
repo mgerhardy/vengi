@@ -9,6 +9,7 @@
 #include "core/StandardLib.h"
 #include <new>
 #include <stddef.h>
+#include <type_traits>
 
 namespace core {
 

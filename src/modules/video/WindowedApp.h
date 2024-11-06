@@ -9,7 +9,7 @@
 #include "util/KeybindingHandler.h"
 #include "video/Types.h"
 #include "video/FileDialogOptions.h"
-#include <SDL_main.h>
+#include <SDL3/SDL_main.h>
 #include <glm/vec2.hpp>
 
 struct SDL_Window;
@@ -64,7 +64,7 @@ protected:
 	/**
 	 * @brief Delta of the mouse movement since the last frame
 	 */
-	glm::ivec2 _mouseRelativePos;
+	glm::vec2 _mouseRelativePos;
 
 	WindowedApp(const io::FilesystemPtr& filesystem, const core::TimeProviderPtr& timeProvider, size_t threadPoolSize = 1);
 

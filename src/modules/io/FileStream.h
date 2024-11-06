@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-struct SDL_RWops;
+struct SDL_IOStream;
 
 namespace io {
 
@@ -28,7 +28,7 @@ typedef core::SharedPtr<File> FilePtr;
  */
 class FileStream : public SeekableReadWriteStream {
 private:
-	mutable SDL_RWops *_rwops = nullptr;
+	mutable SDL_IOStream *_rwops = nullptr;
 	FilePtr _file;
 	int64_t _size = -1;
 	int64_t _pos = 0;

@@ -5,9 +5,9 @@
 #include "core/ArrayLength.h"
 #include "core/collection/DynamicArray.h"
 #include "io/FilesystemEntry.h"
-#include <SDL_platform.h>
+#include <SDL3/SDL_platform.h>
 
-#if defined(__LINUX__) || defined(__MACOSX__) || defined(__EMSCRIPTEN__)
+#if defined(SDL_PLATFORM_LINUX) || defined(SDL_PLATFORM_MACOS) || defined(__EMSCRIPTEN__)
 #include "core/Log.h"
 #include "core/String.h"
 #include "core/StringUtil.h"
@@ -24,7 +24,7 @@
 #define PATH_MAX 1024
 #endif
 
-#ifdef __MACOSX__
+#ifdef SDL_PLATFORM_MACOS
 #include <libproc.h>
 #include <sysdir.h>
 #endif
@@ -32,7 +32,7 @@
 namespace io {
 namespace priv {
 
-static char *getHome() {
+static const char *getHome() {
 	const int uid = (int)getuid();
 	if (uid != 0) {
 		return SDL_getenv("HOME");
@@ -44,7 +44,7 @@ static char *getHome() {
  * @brief Replace the shell variable for the home dir
  */
 static inline core::String replaceHome(const core::String &in) {
-	char *envHome = getHome();
+	const char *envHome = getHome();
 	if (envHome == nullptr) {
 		return in;
 	}
@@ -53,7 +53,7 @@ static inline core::String replaceHome(const core::String &in) {
 	return core::string::replaceAll(out, "${HOME}", envHome);
 }
 
-#ifdef __MACOSX__
+#ifdef SDL_PLATFORM_MACOS
 
 // needs at least OSX 10.12
 static core::String appleDir(sysdir_search_path_directory_t dir) {
@@ -68,7 +68,7 @@ static core::String appleDir(sysdir_search_path_directory_t dir) {
 	return "";
 }
 
-#else // __MACOSX__
+#else // SDL_PLATFORM_MACOS
 
 static core::String load(const core::String &file) {
 	FILE *fp = fopen(file.c_str(), "r");
@@ -117,12 +117,12 @@ static core::String load(const core::String &file) {
 
 bool initState(io::FilesystemState &state) {
 #ifndef __EMSCRIPTEN__
-	char *envHome = priv::getHome();
+	const char *envHome = priv::getHome();
 	if (envHome == nullptr) {
 		Log::debug("HOME env var not found");
 		return false;
 	}
-#if defined __MACOSX__
+#if defined SDL_PLATFORM_MACOS
 	state._directories[FilesystemDirectories::FS_Dir_Download] = priv::appleDir(SYSDIR_DIRECTORY_DOWNLOADS);
 	state._directories[FilesystemDirectories::FS_Dir_Documents] = priv::appleDir(SYSDIR_DIRECTORY_DOCUMENT);
 	state._directories[FilesystemDirectories::FS_Dir_Pictures] = priv::appleDir(SYSDIR_DIRECTORY_PICTURES);
@@ -168,7 +168,7 @@ bool initState(io::FilesystemState &state) {
 			state._directories[FilesystemDirectories::FS_Dir_Public] = priv::replaceHome(value);
 		}
 	}
-#endif // !__MACOSX__
+#endif // !SDL_PLATFORM_MACOS
 
 	for (int n = 0; n < FilesystemDirectories::FS_Dir_Max; ++n) {
 		if (state._directories[n].empty()) {

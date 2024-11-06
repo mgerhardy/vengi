@@ -3,7 +3,7 @@
  */
 
 #include "Lock.h"
-#include <SDL_mutex.h>
+#include <SDL3/SDL_mutex.h>
 
 namespace core {
 
@@ -28,7 +28,7 @@ Lock::~Lock() {
 	SDL_DestroyMutex(_mutex);
 }
 
-SDL_mutex* Lock::handle() {
+SDL_Mutex* Lock::handle() {
 	return _mutex;
 }
 
