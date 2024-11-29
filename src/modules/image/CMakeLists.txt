@@ -11,17 +11,10 @@ if (NOT MSVC)
 	target_compile_options(${LIB} PRIVATE -Wno-unused-function -Wno-missing-field-initializers)
 endif()
 
-# TODO: not included as local lib yet
-if (NOT USE_LIBS_FORCE_LOCAL)
-	find_package(JPEG)
-	if (JPEG_FOUND)
-		target_compile_definitions(${LIB} PRIVATE -DUSE_LIBJPEG)
-		target_link_libraries(${LIB} PRIVATE JPEG::JPEG)
-	endif()
-else()
-	set(JPEG_FOUND 0)
+if (USE_LIBJPEG)
+	target_compile_definitions(${LIB} PRIVATE -DUSE_LIBJPEG)
+	target_link_libraries(${LIB} PRIVATE JPEG::JPEG)
 endif()
-set(USE_LIBJPEG ${JPEG_FOUND} CACHE BOOL "Use libjpeg for jpeg saving" FORCE)
 
 set(TEST_SRCS
 	tests/ImageTest.cpp
