@@ -98,13 +98,12 @@ CORE_FORCE_INLINE void insert_quad(Mesh &mesh, uint32_t v1, uint32_t v2, uint32_
 }
 
 CORE_FORCE_INLINE uint32_t get_vertex(Mesh &mesh, uint32_t x, uint32_t y, uint32_t z, const voxel::Voxel &voxel,
-									  uint32_t norm, uint32_t ao) {
+									  uint32_t norm, uint32_t ao, const glm::ivec3 &translate) {
 	VoxelVertex vertex;
-	vertex.position = glm::vec3(x, y, z);
+	vertex.position = glm::vec3(x + translate.x, y + translate.y, z + translate.z);
 	vertex.info = 0;
 	vertex.ambientOcclusion = ao;
 	vertex.colorIndex = voxel.getColor();
-	Log::error("add vertex at %d:%d:%d with color %d", x, y, z, voxel.getColor());
 	IndexType index = mesh.addVertex(vertex);
 	// mesh.setNormal(index, norm);
 	return index;
@@ -118,11 +117,11 @@ static void prepareChunk(const voxel::RawVolume &map, std::vector<Voxel> &voxels
 	voxel::RawVolume::Sampler sampler(map);
 	voxels.reserve(CS_P3);
 	sampler.setPosition(chunkPos);
-	for (uint32_t y = 0; y < CS_P; y++) {
+	for (uint32_t y = 1; y < CS_P; y++) {
 		voxel::RawVolume::Sampler sampler2 = sampler;
-		for (uint32_t x = 0; x < CS_P; x++) {
+		for (uint32_t x = 1; x < CS_P; x++) {
 			voxel::RawVolume::Sampler sampler3 = sampler2;
-			for (uint32_t z = 0; z < CS_P; z++) {
+			for (uint32_t z = 1; z < CS_P; z++) {
 				const int index = z + (x * CS_P) + (y * CS_P2);
 				voxels[index] = sampler3.voxel();
 				sampler3.movePositiveZ();
@@ -134,25 +133,28 @@ static void prepareChunk(const voxel::RawVolume &map, std::vector<Voxel> &voxels
 }
 
 void extractBinaryGreedyMesh(const voxel::RawVolume *volData, const Region &region, ChunkMesh *result,
-							 const glm::ivec3 &translate, bool ambientOcclusion, bool optimize) {
+							 const glm::ivec3 &translate, bool bake_ao, bool optimize) {
 	// loop over each chunk of the size CS_P * CS_P * CS_P and extract the mesh for it
 	// then merge the mesh into the result
 
+	result->clear();
+	const glm::ivec3& offset = region.getLowerCorner();
+	result->setOffset(offset);
+
 	MeshData meshData;
-	meshData.col_face_masks.reserve(CS_P2 * 6);
-	meshData.a_axis_cols.reserve(CS_P2);
-	meshData.b_axis_cols.reserve(CS_P);
-	meshData.merged_right.reserve(CS_P);
-	meshData.merged_forward.reserve(CS_P2);
 	std::vector<voxel::Voxel> voxels;
 	prepareChunk(*volData, voxels, region.getLowerCorner(), meshData);
 
-	auto &col_face_masks = meshData.col_face_masks;
-	auto &a_axis_cols = meshData.a_axis_cols;
-	auto &b_axis_cols = meshData.b_axis_cols;
-	auto &merged_right = meshData.merged_right;
-	auto &merged_forward = meshData.merged_forward;
-
+	std::vector<uint64_t> col_face_masks = meshData.col_face_masks;
+	std::vector<uint64_t> a_axis_cols = meshData.a_axis_cols;
+	std::vector<uint64_t> b_axis_cols = meshData.b_axis_cols;
+	std::vector<uint64_t> merged_right = meshData.merged_right;
+	std::vector<uint64_t> merged_forward = meshData.merged_forward;
+	col_face_masks.reserve(CS_P2 * 6);
+	a_axis_cols.reserve(CS_P2);
+	b_axis_cols.reserve(CS_P);
+	merged_right.reserve(CS_P);
+	merged_forward.reserve(CS_P2);
 	// Begin culling faces
 	auto p = voxels.begin();
 	core_memset(a_axis_cols.data(), 0, CS_P2);
@@ -164,7 +166,6 @@ void extractBinaryGreedyMesh(const voxel::RawVolume *volData, const Region &regi
 
 			for (int c = 0; c < CS_P; c++) {
 				if (solid_check(*p)) {
-					Log::error("Non solid voxel at %d:%d:%d", a, b, c);
 					a_axis_cols[b + (c * CS_P)] |= 1ULL << a;
 					b_axis_cols[c] |= 1ULL << b;
 					cb |= 1ULL << c;
@@ -234,7 +235,7 @@ void extractBinaryGreedyMesh(const voxel::RawVolume *volData, const Region &regi
 
 					if (voxels[get_axis_i(axis, right, forward, bit_pos)].isSame(
 							voxels[get_axis_i(axis, right, forward + 1, bit_pos)]) &&
-						(!ambientOcclusion || compare_ao(voxels, axis, forward, right, bit_pos + air_dir, 1, 0))) {
+						(!bake_ao || compare_ao(voxels, axis, forward, right, bit_pos + air_dir, 1, 0))) {
 						merged_forward[(right * CS_P) + bit_pos]++;
 					} else {
 						bits_merging_forward &= ~(1ULL << bit_pos);
@@ -256,7 +257,7 @@ void extractBinaryGreedyMesh(const voxel::RawVolume *volData, const Region &regi
 					if ((bits_merging_right & (1ULL << bit_pos)) != 0 &&
 						(merged_forward[(right * CS_P) + bit_pos] == merged_forward[(right + 1) * CS_P + bit_pos]) &&
 						(type.isSame(voxels[get_axis_i(axis, right + 1, forward, bit_pos)])) &&
-						(!ambientOcclusion || compare_ao(voxels, axis, forward, right, bit_pos + air_dir, 0, 1))) {
+						(!bake_ao || compare_ao(voxels, axis, forward, right, bit_pos + air_dir, 0, 1))) {
 						bits_walking_right |= 1ULL << bit_pos;
 						merged_right[bit_pos]++;
 						merged_forward[rightxCS_P + bit_pos] = 0;
@@ -272,7 +273,7 @@ void extractBinaryGreedyMesh(const voxel::RawVolume *volData, const Region &regi
 					const uint8_t mesh_up = bit_pos + (face % 2 == 0 ? 1 : 0);
 
 					uint8_t ao_LB = 3, ao_RB = 3, ao_RF = 3, ao_LF = 3;
-					if (ambientOcclusion) {
+					if (bake_ao) {
 						const int c = bit_pos + air_dir;
 						const uint8_t ao_F = solid_check(voxels[get_axis_i(axis, right, forward - 1, c)]);
 						const uint8_t ao_B = solid_check(voxels[get_axis_i(axis, right, forward + 1, c)]);
@@ -301,35 +302,35 @@ void extractBinaryGreedyMesh(const voxel::RawVolume *volData, const Region &regi
 					const int meshIndex = 0;
 					Mesh &mesh = result->mesh[meshIndex];
 					if (face == 0) {
-						v1 = get_vertex(mesh, mesh_left, mesh_up, mesh_back, type, face, ao_LB);
-						v2 = get_vertex(mesh, mesh_right, mesh_up, mesh_back, type, face, ao_RB);
-						v3 = get_vertex(mesh, mesh_right, mesh_up, mesh_front, type, face, ao_RF);
-						v4 = get_vertex(mesh, mesh_left, mesh_up, mesh_front, type, face, ao_LF);
+						v1 = get_vertex(mesh, mesh_left, mesh_up, mesh_back, type, face, ao_LB, translate);
+						v2 = get_vertex(mesh, mesh_right, mesh_up, mesh_back, type, face, ao_RB, translate);
+						v3 = get_vertex(mesh, mesh_right, mesh_up, mesh_front, type, face, ao_RF, translate);
+						v4 = get_vertex(mesh, mesh_left, mesh_up, mesh_front, type, face, ao_LF, translate);
 					} else if (face == 1) {
-						v1 = get_vertex(mesh, mesh_left, mesh_up, mesh_back, type, face, ao_LB);
-						v2 = get_vertex(mesh, mesh_left, mesh_up, mesh_front, type, face, ao_LF);
-						v3 = get_vertex(mesh, mesh_right, mesh_up, mesh_front, type, face, ao_RF);
-						v4 = get_vertex(mesh, mesh_right, mesh_up, mesh_back, type, face, ao_RB);
+						v1 = get_vertex(mesh, mesh_left, mesh_up, mesh_back, type, face, ao_LB, translate);
+						v2 = get_vertex(mesh, mesh_left, mesh_up, mesh_front, type, face, ao_LF, translate);
+						v3 = get_vertex(mesh, mesh_right, mesh_up, mesh_front, type, face, ao_RF, translate);
+						v4 = get_vertex(mesh, mesh_right, mesh_up, mesh_back, type, face, ao_RB, translate);
 					} else if (face == 2) {
-						v1 = get_vertex(mesh, mesh_up, mesh_back, mesh_left, type, face, ao_LB);
-						v2 = get_vertex(mesh, mesh_up, mesh_back, mesh_right, type, face, ao_RB);
-						v3 = get_vertex(mesh, mesh_up, mesh_front, mesh_right, type, face, ao_RF);
-						v4 = get_vertex(mesh, mesh_up, mesh_front, mesh_left, type, face, ao_LF);
+						v1 = get_vertex(mesh, mesh_up, mesh_back, mesh_left, type, face, ao_LB, translate);
+						v2 = get_vertex(mesh, mesh_up, mesh_back, mesh_right, type, face, ao_RB, translate);
+						v3 = get_vertex(mesh, mesh_up, mesh_front, mesh_right, type, face, ao_RF, translate);
+						v4 = get_vertex(mesh, mesh_up, mesh_front, mesh_left, type, face, ao_LF, translate);
 					} else if (face == 3) {
-						v1 = get_vertex(mesh, mesh_up, mesh_back, mesh_left, type, face, ao_LB);
-						v2 = get_vertex(mesh, mesh_up, mesh_front, mesh_left, type, face, ao_LF);
-						v3 = get_vertex(mesh, mesh_up, mesh_front, mesh_right, type, face, ao_RF);
-						v4 = get_vertex(mesh, mesh_up, mesh_back, mesh_right, type, face, ao_RB);
+						v1 = get_vertex(mesh, mesh_up, mesh_back, mesh_left, type, face, ao_LB, translate);
+						v2 = get_vertex(mesh, mesh_up, mesh_front, mesh_left, type, face, ao_LF, translate);
+						v3 = get_vertex(mesh, mesh_up, mesh_front, mesh_right, type, face, ao_RF, translate);
+						v4 = get_vertex(mesh, mesh_up, mesh_back, mesh_right, type, face, ao_RB, translate);
 					} else if (face == 4) {
-						v1 = get_vertex(mesh, mesh_back, mesh_left, mesh_up, type, face, ao_LB);
-						v2 = get_vertex(mesh, mesh_back, mesh_right, mesh_up, type, face, ao_RB);
-						v3 = get_vertex(mesh, mesh_front, mesh_right, mesh_up, type, face, ao_RF);
-						v4 = get_vertex(mesh, mesh_front, mesh_left, mesh_up, type, face, ao_LF);
+						v1 = get_vertex(mesh, mesh_back, mesh_left, mesh_up, type, face, ao_LB, translate);
+						v2 = get_vertex(mesh, mesh_back, mesh_right, mesh_up, type, face, ao_RB, translate);
+						v3 = get_vertex(mesh, mesh_front, mesh_right, mesh_up, type, face, ao_RF, translate);
+						v4 = get_vertex(mesh, mesh_front, mesh_left, mesh_up, type, face, ao_LF, translate);
 					} else {
-						v1 = get_vertex(mesh, mesh_back, mesh_left, mesh_up, type, face, ao_LB);
-						v2 = get_vertex(mesh, mesh_front, mesh_left, mesh_up, type, face, ao_LF);
-						v3 = get_vertex(mesh, mesh_front, mesh_right, mesh_up, type, face, ao_RF);
-						v4 = get_vertex(mesh, mesh_back, mesh_right, mesh_up, type, face, ao_RB);
+						v1 = get_vertex(mesh, mesh_back, mesh_left, mesh_up, type, face, ao_LB, translate);
+						v2 = get_vertex(mesh, mesh_front, mesh_left, mesh_up, type, face, ao_LF, translate);
+						v3 = get_vertex(mesh, mesh_front, mesh_right, mesh_up, type, face, ao_RF, translate);
+						v4 = get_vertex(mesh, mesh_back, mesh_right, mesh_up, type, face, ao_RB, translate);
 					}
 
 					insert_quad(mesh, v1, v2, v3, v4, ao_LB + ao_RF > ao_RB + ao_LF);
