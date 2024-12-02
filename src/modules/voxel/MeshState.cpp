@@ -22,7 +22,7 @@ bool MeshState::init() {
 }
 
 void MeshState::construct() {
-	_meshSize = core::Var::get(cfg::VoxelMeshSize, "64", core::CV_READONLY);
+	_meshSize = core::Var::get(cfg::VoxelMeshSize, "62", core::CV_READONLY);
 }
 
 glm::vec3 MeshState::VolumeData::centerPos() const {
