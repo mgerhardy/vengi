@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+{% set title = config.site_name %}
+{% if page and page.meta and page.meta.title %}
+  {% set title = title ~ " - " ~ page.meta.title %}
+{% elif page and page.title and not page.is_homepage %}
+  {% set title = title ~ " - " ~ page.title | striptags %}
+{% endif %}
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{ title }}" />
+<meta property="og:description" content="{{ config.site_description }}" />
+<meta property="og:url" content="{{ page.canonical_url }}" />
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/vengi-voxel/vengi/images/voxedit-07_2024.png" />
+<meta property="og:image:type" content="image/png" />
+
+<meta name="keywords" content="voxel,voxelart,voxeleditor,magicavoxel,cubzh,qubicle,sandbox,minecraft,quake,starmade,cubeworld,goxel,aceofspades,binvox,cnc,cubzh,gltf,animation" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@MartinGerhardy" />
+<meta name="twitter:title" content="{{ title }}" />
+<meta name="twitter:description" content="{{ config.site_description }}" />
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/vengi-voxel/vengi/images/voxedit-07_2024.png" />
+{% endblock %}
