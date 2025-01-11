@@ -63,6 +63,7 @@
 #include "voxelformat/private/slab6/KV6Format.h"
 #include "voxelformat/private/slab6/KVXFormat.h"
 #include "voxelformat/private/slab6/SLAB6VoxFormat.h"
+#include "voxelformat/private/spritestack/SpriteStackFormat.h"
 #include "voxelformat/private/sproxel/SproxelFormat.h"
 #include "voxelformat/private/starmade/SMFormat.h"
 #include "voxelformat/private/starmade/SMTPLFormat.h"
@@ -126,6 +127,7 @@ const io::FormatDescription *voxelLoad() {
 												 CSMFormat::format(),
 												 CSMFormat::formatNVM(),
 												 SLAB6VoxFormat::format(),
+												 SpriteStackFormat::format(),
 												 VMaxFormat::format(),
 												 io::format::png(),
 												 {"", {}, {}, 0u}};
@@ -247,6 +249,8 @@ static core::SharedPtr<Format> getFormat(const io::FormatDescription &desc, uint
 			return core::make_shared<PNGFormat>();
 		} else if (GLTFFormat::format().matchesExtension(ext)) {
 			return core::make_shared<GLTFFormat>();
+		} else if (ext == SpriteStackFormat::format().mainExtension()) {
+			return core::make_shared<SpriteStackFormat>();
 		} else if (BenVoxelFormat::format().matchesExtension(ext)) {
 			return core::make_shared<BenVoxelFormat>();
 		} else {

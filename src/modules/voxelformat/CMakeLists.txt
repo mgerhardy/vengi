@@ -82,6 +82,7 @@ set(SRCS
 	private/slab6/KV6Format.h                private/slab6/KV6Format.cpp
 	private/slab6/SLAB6VoxFormat.h           private/slab6/SLAB6VoxFormat.cpp
 	private/slab6/SLABShared.h               private/slab6/SLABShared.cpp
+	private/spritestack/SpriteStackFormat.h  private/spritestack/SpriteStackFormat.cpp
 	private/sproxel/SproxelFormat.h          private/sproxel/SproxelFormat.cpp
 	private/starmade/SMFormat.h              private/starmade/SMFormat.cpp
 	private/starmade/SMTPLFormat.h           private/starmade/SMTPLFormat.cpp
@@ -144,6 +145,7 @@ set(TEST_SRCS
 	tests/QEFFormatTest.cpp
 	tests/QuakeBSPFormatTest.cpp
 	tests/SchematicFormatTest.cpp
+	tests/SpriteStackFormatTest.cpp
 	tests/SproxelFormatTest.cpp
 	tests/SLABSharedTest.cpp
 	tests/SLAB6VoxFormatTest.cpp
@@ -255,6 +257,7 @@ set(TEST_FILES
 	tests/slab6_vox_test.kv6
 	tests/slab6_vox_test.kvx
 	tests/slab6_vox_test.vox
+	tests/spritestack.zip
 	tests/blockbench_meshtypes.bbmodel
 	tests/female_template_head_4_10.bbmodel
 	tests/loy_s_goodies_female_template.bbmodel
