@@ -1,0 +1,2380 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Voxel editor for linux windows and macosx">
+      
+      
+        <meta name="author" content="Martin Gerhardy">
+      
+      
+      
+        <link rel="prev" href="../Formats/">
+      
+      
+        <link rel="next" href="../Palette/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Scripting api - vengi - voxel tools</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+
+
+  
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="vengi - voxel tools - Scripting api" />
+<meta property="og:description" content="Voxel editor for linux windows and macosx" />
+<meta property="og:url" content="None" />
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/vengi-voxel/vengi/images/voxedit-07_2024.png" />
+<meta property="og:image:type" content="image/png" />
+
+<meta name="keywords" content="voxel,voxelart,voxeleditor,magicavoxel,cubzh,qubicle,sandbox,minecraft,quake,starmade,cubeworld,goxel,aceofspades,binvox,cnc,cubzh,gltf,animation" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@MartinGerhardy" />
+<meta name="twitter:title" content="vengi - voxel tools - Scripting api" />
+<meta name="twitter:description" content="Voxel editor for linux windows and macosx" />
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/vengi-voxel/vengi/images/voxedit-07_2024.png" />
+
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#scripting-api" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="vengi - voxel tools" class="md-header__button md-logo" aria-label="vengi - voxel tools" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            vengi - voxel tools
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Scripting api
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/vengi-voxel/vengi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="vengi - voxel tools" class="md-nav__button md-logo" aria-label="vengi - voxel tools" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    vengi - voxel tools
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/vengi-voxel/vengi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome to vengi
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Basics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Formats/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Scripting api
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Scripting api
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arguments
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenegraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      SceneGraph
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenegraphnode" class="md-nav__link">
+    <span class="md-ellipsis">
+      SceneGraphNode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keyframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyframe
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#palette-and-material" class="md-nav__link">
+    <span class="md-ellipsis">
+      Palette and material
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noise" class="md-nav__link">
+    <span class="md-ellipsis">
+      Noise
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      Shape
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#region" class="md-nav__link">
+    <span class="md-ellipsis">
+      Region
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      Volume
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vectors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quaternion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quaternion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#importer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importer
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      Image
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#io" class="md-nav__link">
+    <span class="md-ellipsis">
+      IO
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cvar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cvar
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logging
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#system" class="md-nav__link">
+    <span class="md-ellipsis">
+      System
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-useful-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other useful information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available scripts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available modules
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Palette/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Palette
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Material/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Material
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Translation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Translation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    VoxConvert
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            VoxConvert
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxconvert/Index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxconvert/Usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxconvert/Configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxconvert/Examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Examples
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxconvert/Screenshots/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Screenshots
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    VoxEdit
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            VoxEdit
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxedit/Index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxedit/Features/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Features
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxedit/Usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxedit/Controls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Controls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxedit/Configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxedit/Screenshots/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Screenshots
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Thumbnailer
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Thumbnailer
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../thumbnailer/Index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../thumbnailer/Examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Example
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Developers
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Developers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Dependencies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dependencies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Compilation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Basics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Basic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VisualTests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visual Tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ShaderTool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Shader integration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arguments
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenegraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      SceneGraph
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenegraphnode" class="md-nav__link">
+    <span class="md-ellipsis">
+      SceneGraphNode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keyframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyframe
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#palette-and-material" class="md-nav__link">
+    <span class="md-ellipsis">
+      Palette and material
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noise" class="md-nav__link">
+    <span class="md-ellipsis">
+      Noise
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      Shape
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#region" class="md-nav__link">
+    <span class="md-ellipsis">
+      Region
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      Volume
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vectors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quaternion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quaternion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#importer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importer
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      Image
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#io" class="md-nav__link">
+    <span class="md-ellipsis">
+      IO
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cvar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cvar
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logging
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#system" class="md-nav__link">
+    <span class="md-ellipsis">
+      System
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-useful-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other useful information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available scripts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available modules
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="scripting-api">Scripting api</h1>
+<p>There is a console command (called <code>xs</code>) in <a href="../voxedit/Index/">voxedit</a> and a command line parameter in <a href="../voxconvert/Index/">voxconvert</a> to execute lua scripts for generating voxels. This command expects the lua script filename (<code>.lua</code> can be omitted) and the additional arguments for the <code>main()</code> method.</p>
+<hr />
+<blockquote>
+<p>If you are new to lua you can read more about it on <a href="http://lua-users.org/wiki/TutorialDirectory">lua-users</a>.</p>
+</blockquote>
+<hr />
+<blockquote>
+<p><strong>voxedit</strong></p>
+<p>Calling <code>xs &lt;script&gt; help</code> (in the script console) will print the supported arguments for the given script file in voxedit.</p>
+</blockquote>
+<hr />
+<blockquote>
+<p><strong>voxconvert</strong></p>
+<p><code>./vengi-voxconvert --script "&lt;script&gt; help" --scriptcolor 1 --input in.qb --output out.qb</code></p>
+<p><code>--scriptcolor</code> defines the color palette index that is given to the script as parameter.</p>
+</blockquote>
+<hr />
+<p>By default the script files will be searched in a <code>scripts</code> folder next to where the binary is located and in the usual search paths (see <a href="../Configuration/">configuration</a> for more details). You can also give the full path to the script file.</p>
+<p>There are two functions in each script. One is called <code>arguments</code> and one <code>main</code>. <code>arguments</code> returns a list of parameters for the <code>main</code> function. The default parameters for <code>main</code> are <code>node</code>, <code>region</code> and <code>color</code>. <code>color</code> is the palette index starting from <code>0</code> (the selected color in the palette panel in <code>voxedit</code> or the specified color index in <code>voxconvert</code> as given by <code>--scriptcolor</code>).</p>
+<p>So the first few parameters are the same for each script call. And the script defines any additional parameter for the <code>main</code> function by returing values in the <code>arguments</code> function.</p>
+<h2 id="examples">Examples</h2>
+<h3 id="without-parameters">Without parameters</h3>
+<pre><code class="language-lua">function main(node, region, color)
+    local volume = node:volume()
+    local mins = region:mins()
+    local maxs = region:maxs()
+    for x = mins.x, maxs.x do
+        for y = mins.y, maxs.y do
+            for z = mins.z, maxs.z do
+                volume:setVoxel(x, y, z, color)
+            end
+        end
+    end
+end
+</code></pre>
+<p>Execute this via console <code>xs scriptfile</code></p>
+<h3 id="with-one-parameter">With one parameter</h3>
+<pre><code class="language-lua">function arguments()
+    return {
+        { name = 'n', desc = 'height level delta', type = 'int', default = '2' }
+    }
+end
+
+function main(node, region, color, n)
+    [...]
+end
+</code></pre>
+<p>Execute this via console <code>xs scriptfile 1</code> where <code>1</code> will be the value of <code>n</code>. Omitting the <code>1</code> will add the <code>default</code> value from the argument list.</p>
+<h3 id="download-a-file-and-import-it">Download a file and import it</h3>
+<pre><code class="language-lua">local function basename(str)
+    local name = string.gsub(str, &quot;(.*/)(.*)&quot;, &quot;%2&quot;)
+    return name
+end
+
+function main(_, _, _)
+    local url = &quot;https://github.com/vengi-voxel/vengi/raw/9c101f32b84f949ed82f7545883e80a318760580/data/voxel/guybrush.vox&quot;
+    local filename = basename(url)
+    local stream = g_http.get(url)
+    g_import.scene(filename, stream)
+end
+</code></pre>
+<h3 id="find-the-best-palette-match">Find the best palette match</h3>
+<pre><code class="language-lua">function main(node, region, color)
+    -- find match (palette index) for red in the current palette (RGB value)
+    -- this value can be used in e.g. volume:setVoxel(x, y, z, match)
+    local match = node:palette():match(255, 0, 0)
+    [...]
+end
+</code></pre>
+<p>This will find the best match in the currently used palette and return the index.</p>
+<h2 id="arguments">Arguments</h2>
+<p>Supported <code>type</code>s are:</p>
+<ul>
+<li>
+<p><code>int</code>: <code>min</code>, <code>max</code> values are supported, too</p>
+</li>
+<li>
+<p><code>float</code>: <code>min</code>, <code>max</code> values are supported, too</p>
+</li>
+<li>
+<p><code>enum</code>: <code>enum</code> as a property specifies a list of string separated by <code>,</code></p>
+</li>
+<li>
+<p><code>str</code>: string input</p>
+</li>
+<li>
+<p><code>colorindex</code>: a color index from current palette (clamped)</p>
+</li>
+<li>
+<p><code>bool</code>:</p>
+</li>
+</ul>
+<p>The <code>desc</code>ription field is just for the user interface of the script parameter list.</p>
+<p>A <code>default</code> value can get set, too.</p>
+<p>The order in the arguments table defines the order in which the arguments are passed over to the script.</p>
+<h2 id="scenegraph">SceneGraph</h2>
+<p><code>g_scenegraph</code> lets you access different nodes or create new ones.</p>
+<p>The functions are:</p>
+<ul>
+<li>
+<p><code>align()</code>: Allow to align all nodes on the floor next to each other without overlapping.</p>
+</li>
+<li>
+<p><code>new(name, [region], [visible], [type=group])</code>: Creates a new node with the given <code>name</code>, the size and position according to the <code>region</code> and an optional <code>visible</code> parameter. If <code>region</code> is given a model is created - otherwise a group node. Valid values for <code>type</code> are <code>group</code>, <code>point</code> and <code>camera</code> (the default is <code>group</code>).</p>
+</li>
+<li>
+<p><code>get([nodeId])</code>: Returns the <code>node</code> for the given <code>nodeId</code> - if the <code>nodeId</code> is not given, it will return the current active node. Which by default is the node for the volume the script is currently executed for.</p>
+</li>
+<li>
+<p><code>getByName(name)</code>: Returns <code>nil</code> if no node with the given name exists</p>
+</li>
+<li>
+<p><code>getByUUID(uuid)</code>: Returns <code>nil</code> if no node with the given uuid exists</p>
+</li>
+<li>
+<p><code>activeAnimation()</code>: Return the current active animation</p>
+</li>
+<li>
+<p><code>setAnimation(string)</code>: Activate the animation</p>
+</li>
+<li>
+<p><code>addAnimation(string)</code>: Add a new animation</p>
+</li>
+<li>
+<p><code>duplicateAnimation(animation, newAnimationName)</code>: Add a new animation by duplicating the given animation</p>
+</li>
+<li>
+<p><code>hasAnimation(string)</code>: Check if the animation exists</p>
+</li>
+<li>
+<p><code>nodeIds()</code>: Returns a table with all node ids of the current scene graph.</p>
+</li>
+</ul>
+<pre><code class="language-lua">local allNodeIds = g_scenegraph.nodeIds()
+for i, nodeId in ipairs(allNodeIds) do
+  -- Do something with each nodeId
+end
+</code></pre>
+<ul>
+<li><code>updateTransforms()</code>: Update the key frame transforms when they are dirty after changing values (see <code>Keyframe</code>)</li>
+</ul>
+<h2 id="scenegraphnode">SceneGraphNode</h2>
+<ul>
+<li>
+<p><code>addAnimation(string)</code>: Add a new animation</p>
+</li>
+<li>
+<p><code>addKeyFrame(frame)</code>: Add a new key frame for frame number and return it. E.g. <code>addFrame(20)</code> will add a new key frame for the frame 20.</p>
+</li>
+<li>
+<p><code>hasKeyFrameForFrame(frame)</code>:</p>
+</li>
+<li>
+<p><code>id()</code>: Returns the id of the current node</p>
+</li>
+<li>
+<p><code>clone()</code>: Clones the current node</p>
+</li>
+<li>
+<p><code>uuid()</code>: Returns the uuid of the current node</p>
+</li>
+<li>
+<p><code>isCamera()</code>: Returns true if the node is a camera node</p>
+</li>
+<li>
+<p><code>isGroup()</code>: Returns true if the node is a group node</p>
+</li>
+<li>
+<p><code>isModel()</code>: Returns true if the node is a model node (it has a volume attached)</p>
+</li>
+<li>
+<p><code>isPoint()</code>: Returns true if the node is a point node</p>
+</li>
+<li>
+<p><code>isReference()</code>: Returns true if the node is a model reference</p>
+</li>
+<li>
+<p><code>keyFrame(keyFrameIdx)</code>: Returns an existing keyframe (see below)</p>
+</li>
+<li>
+<p><code>keyFrameForFrame(frame)</code>: Returns an existing keyframe that has a frame number &lt;= the given frame</p>
+</li>
+<li>
+<p><code>name()</code>: Returns the current name of the node.</p>
+</li>
+<li>
+<p><code>setName(string)</code>: Set the name of the node.</p>
+</li>
+<li>
+<p><code>palette()</code>: Returns the current palette of the node.</p>
+</li>
+<li>
+<p><code>parent()</code>: Returns the id of the parent node - or <code>-1</code> if no parent exists (root node)</p>
+</li>
+<li>
+<p><code>removeKeyFrameForFrame(frame)</code>: Remove the keyframe for the given frame. Throws an error if no key frame with the given frame exists.</p>
+</li>
+<li>
+<p><code>removeKeyFrame(keyFrameIdx)</code>: Remove the existing key frame at the given index. Throws an error if the index is invalid or the key frame doesn't exist.</p>
+</li>
+<li>
+<p><code>setPalette(palette, [remap])</code>: Change the palette or if remap is given and is true it remaps to the new palette</p>
+</li>
+<li>
+<p><code>setPivot(vec3)</code>, <code>setPivot(x, y, z)</code>:</p>
+</li>
+<li>
+<p><code>volume()</code>: Gives you access to the volume of a model node.</p>
+</li>
+</ul>
+<p>Access these functions like this:</p>
+<pre><code class="language-lua">local scenegraphnode = [...]
+local name = scenegraphnode:name()
+</code></pre>
+<h2 id="keyframe">Keyframe</h2>
+<blockquote>
+<p>Valid interpolation strings</p>
+<ul>
+<li>Instant</li>
+<li>Linear</li>
+<li>QuadEaseIn</li>
+<li>QuadEaseOut</li>
+<li>QuadEaseInOut</li>
+<li>CubicEaseIn</li>
+<li>CubicEaseOut</li>
+<li>CubicEaseInOut</li>
+</ul>
+</blockquote>
+<ul>
+<li>
+<p><code>index()</code>: Returns the key frame index</p>
+</li>
+<li>
+<p><code>frame()</code>: Returns the frame for this key frame object</p>
+</li>
+<li>
+<p><code>interpolation()</code>: Returns interpolation string</p>
+</li>
+<li>
+<p><code>setInterpolation(string)</code>: Set the interpolation for this key frame - must be a valid string</p>
+</li>
+<li>
+<p><code>localScale()</code>: Returns the local scale vector</p>
+</li>
+<li>
+<p><code>setLocalScale(vec3)</code>, <code>setLocalScale(x, y, z)</code>:</p>
+</li>
+<li>
+<p><code>localOrientation()</code>: Returns a quaternion object</p>
+</li>
+<li>
+<p><code>setLocalOrientation(quat)</code>, <code>setLocalOrientation(x, y, z, w)</code>:</p>
+</li>
+<li>
+<p><code>localTranslation()</code>: Returns a vec3 object</p>
+</li>
+<li>
+<p><code>setLocalTranslation(vec3)</code>, <code>setLocalTranslation(x, y, z)</code>:</p>
+</li>
+<li>
+<p><code>worldScale()</code>: Returns a vec3 object</p>
+</li>
+<li>
+<p><code>setWorldScale(vec3)</code>, <code>setWorldScale(x, y, z)</code>:</p>
+</li>
+<li>
+<p><code>worldOrientation()</code>: Returns a quaternion object</p>
+</li>
+<li>
+<p><code>setWorldOrientation(quat)</code>, <code>setWorldOrientation(x, y, z, w)</code>:</p>
+</li>
+<li>
+<p><code>worldTranslation()</code>: Returns a vec3 object</p>
+</li>
+<li>
+<p><code>setWorldTranslation(vec3)</code>, <code>setWorldTranslation(x, y, z)</code>:</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>NOTE</strong> After you've modified something on a key frame, you have to call <code>g_scenegraph.updateTransforms()</code>!</p>
+</blockquote>
+<h2 id="palette-and-material">Palette and material</h2>
+<p>The node palette (<code>node:palette()</code>) has several methods to work with colors. E.g. to find a closest possible match for the given palette index.</p>
+<p>The functions are:</p>
+<ul>
+<li>
+<p><code>color(paletteIndex)</code>: Pushes the vec4 of the color behind the palette index (<code>0-255</code>) as float values between <code>0.0</code> and <code>1.0</code>.</p>
+</li>
+<li>
+<p><code>colorString(paletteIndex)</code>: Return a color string for logging to the console (includes ansi color escape sequences).</p>
+</li>
+<li>
+<p><code>rgba(paletteIndex)</code>: Pushes the four values of the color behind the palette index (<code>0-255</code>).</p>
+</li>
+<li>
+<p><code>colors()</code>: Returns the palette RGBA colors as vec4 values between <code>0.0</code> and <code>1.0</code>.</p>
+</li>
+<li>
+<p><code>load(palette)</code>: Allows to load a <a href="../Palette/">built-in palette</a> or a filename to a supported <a href="../Formats/">palette format</a>.</p>
+</li>
+<li>
+<p><code>material(paletteIndex, material)</code>: Get the value of the material property for the given palette index.</p>
+<blockquote>
+<p>Valid <a href="../Material/">material</a> names</p>
+</blockquote>
+</li>
+<li>
+<p><code>match(r, g, b, [skipIndex])</code>: Returns the closest possible palette color match for the given RGB (<code>0-255</code>) color. The returned palette index is in the range <code>0-255</code>. This value can then be used for the <code>setVoxel</code> method. <code>skipIndex</code> is not taken into account when doing the search.</p>
+</li>
+<li>
+<p><code>setColor(paletteIndex, red, green, blue, [alpha])</code>: Change the color of a palette entry to the given rgba values in the range <code>[0-255]</code>.</p>
+</li>
+<li>
+<p><code>setMaterial(paletteIndex, material, value)</code>: Set the value of the material property for the given palette index.</p>
+<blockquote>
+<p>Valid <a href="../Material/">material</a> names</p>
+</blockquote>
+</li>
+<li>
+<p><code>similar(paletteindex, [coloramount])</code>: Return a table with similar colors given by their palette index.</p>
+</li>
+</ul>
+<p>They are available as e.g. <code>palette:color([...])</code>, <code>palette:match([...])</code> and so on.</p>
+<p>You can create new palettes with the <code>g_palette</code> global by calling e.g.</p>
+<pre><code class="language-lua">local pal = g_palette.new()
+pal.load(&quot;built-in:minecraft&quot;)
+</code></pre>
+<h2 id="noise">Noise</h2>
+<p>The global <code>g_noise</code> supports a few noise generators:</p>
+<ul>
+<li>
+<p><code>noise2(v)</code>, <code>noise3(v)</code>, <code>noise4(v)</code>: Simplex noise. Uses the given <code>vec2</code>, <code>vec3</code> or <code>vec4</code> and returns a float value between <code>0.0</code> and <code>1.0</code>.</p>
+</li>
+<li>
+<p><code>fBm2(v, octaves, lacunarity, gain)</code>, <code>fBm3(v, octaves, lacunarity, gain)</code>, <code>fBm4(v, octaves, lacunarity, gain)</code>: Simplex noise fractal brownian motion sum. Uses the given <code>vec2</code>, <code>vec3</code> or <code>vec4</code> and returns a float value between <code>0.0</code> and <code>1.0</code>.</p>
+</li>
+<li>
+<p><code>ridgedMF2(v, offset, octaves, lacunarity, gain)</code>, <code>ridgedMF3(v, offset, octaves, lacunarity, gain)</code>, <code>ridgedMF4(v, offset, octaves, lacunarity, gain)</code>: Simplex ridged multi-fractal noise sum. Uses the given <code>vec2</code>, <code>vec3</code> or <code>vec4</code> and returns a float value between <code>0.0</code> and <code>1.0</code>.</p>
+</li>
+<li>
+<p><code>swissTurbulence(vec2, offset, octaves, lacunarity, gain, warp)</code>: <a href="https://www.decarpentier.nl/scape-procedural-extensions">blog post</a></p>
+</li>
+<li>
+<p><code>voronoi(vec3, [frequency, seed, enableDistance])</code>: Voronoi noise.</p>
+</li>
+<li>
+<p><code>worley2(v)</code>, <code>worley3(v)</code>: Simplex cellular/worley noise. Uses the given <code>vec2</code> or <code>vec3</code> and returns a float value between <code>0.0</code> and <code>1.0</code>.</p>
+</li>
+</ul>
+<p>They are available as e.g. <code>g_noise.noise2([...])</code>, <code>g_noise.fBm3([...])</code> and so on.</p>
+<h2 id="shape">Shape</h2>
+<p>The global <code>g_shape</code> supports a few shape generators:</p>
+<ul>
+<li>
+<p><code>cylinder(centerBottom, axis, radius, height, voxel)</code>: Create a cylinder at the given position. The position is the center of the bottom plate with the given <code>axis</code> (<code>y</code> is default) as the direction.</p>
+</li>
+<li>
+<p><code>torus(center, minorRadius, majorRadius, voxel)</code>: Create a torus at the given position with the position being the center of the object.</p>
+</li>
+<li>
+<p><code>ellipse(centerBottom, axis, width, height, depth, voxel)</code>: Create an ellipse at the given position. The position is the center of the bottom plate with the given <code>axis</code> (<code>y</code> is default) as the direction.</p>
+</li>
+<li>
+<p><code>dome(centerBottom, axis, negative, width, height, depth, voxel)</code>: Create a dome at the given position. The position is the center of the bottom plate with the given <code>axis</code> (<code>y</code> is default) as the direction. <code>negative</code>: if true the dome will be placed in the negative direction of the axis.</p>
+</li>
+<li>
+<p><code>cone(centerBottom, axis, negative, width, height, depth, voxel)</code>: Create a cone at the given position. The position is the center of the bottom plate with the given <code>axis</code> (<code>y</code> is default) as the direction. <code>negative</code>: if true the cone will be placed in the negative direction of the axis.</p>
+</li>
+<li>
+<p><code>line(start, end, voxel)</code>: Create a line.</p>
+</li>
+<li>
+<p><code>cube(position, width, height, depth, voxel)</code>: Create a cube with the given dimensions. The position is the lower left corner.</p>
+</li>
+<li>
+<p><code>bezier(start, end, control, voxel)</code>: Create a bezier curve with the given <code>start</code>, <code>end</code> and <code>control</code> point</p>
+</li>
+</ul>
+<p>They are available as e.g. <code>g_shape.line([...])</code>, <code>g_shape.ellipse([...])</code> and so on.</p>
+<h2 id="region">Region</h2>
+<ul>
+<li>
+<p><code>contains(region)</code>: Check whether the current region contains the given one. The test is inclusive such that a region is considered to be inside of itself.</p>
+</li>
+<li>
+<p><code>intersects(region)</code>: Check whether the current region intersects with the given one.</p>
+</li>
+<li>
+<p><code>mins()</code>: The lower boundary of the region (inclusive).</p>
+</li>
+<li>
+<p><code>maxs()</code>: The upper boundary of the region (inclusive).</p>
+</li>
+<li>
+<p><code>size()</code>: The size of the region in voxels (<code>ivec3</code>).</p>
+</li>
+<li>
+<p><code>setMins(mins)</code>: The lower boundary of the region - given as <code>ivec3</code> (atm only available for palettes created with <code>new</code>).</p>
+</li>
+<li>
+<p><code>setMaxs(maxs)</code>: The upper boundary of the region - given as <code>ivec3</code> (atm only available for palettes created with <code>new</code>).</p>
+</li>
+<li>
+<p><code>isOnBorder(pos)</code>: Checks whether the given <code>ivec3</code> is located on the border of the region.</p>
+</li>
+<li>
+<p><code>x()</code>: The lower x boundary of the region.</p>
+</li>
+<li>
+<p><code>y()</code>: The lower y boundary of the region.</p>
+</li>
+<li>
+<p><code>z()</code>: The lower z bounary of the region.</p>
+</li>
+<li>
+<p><code>width()</code>: The width of the region measured in voxels.</p>
+</li>
+<li>
+<p><code>height()</code>: The height of the region measured in voxels.</p>
+</li>
+<li>
+<p><code>depth()</code>: The depth of the region measured in voxels.</p>
+</li>
+</ul>
+<p>Access these functions like this:</p>
+<pre><code class="language-lua">local region = [...]
+local mins = region:mins()
+</code></pre>
+<p>To create new regions, you can use the <code>g_region.new</code> function which needs the lower and upper boundaries. For example</p>
+<pre><code class="language-lua">local myregion = g_region.new(0, 0, 0, 1, 1, 1) -- creates a region with 8 voxels
+</code></pre>
+<pre><code class="language-lua">local myregion = g_region.new(0, 0, 0, 0, 0, 0) -- creates a region with 1 voxels
+</code></pre>
+<h2 id="volume">Volume</h2>
+<ul>
+<li>
+<p><code>voxel(x, y, z)</code>: Returns the palette index of the voxel at the given position in the volume <code>[0-255]</code>. Or <code>-1</code> if there is no voxel.</p>
+</li>
+<li>
+<p><code>region()</code>: Return the region of the volume.</p>
+</li>
+<li>
+<p><code>text(ttffont, text, [x], [y], [z], [size=16], [thickness=1], [spacing=0])</code>: Renders the given <code>text</code>. <code>x</code>, <code>y</code>, and <code>z</code> are the region lower boundary coordinates by default.</p>
+</li>
+<li>
+<p><code>fillHollow([color])</code>: Tries to fill all hollows in the volume.</p>
+</li>
+<li>
+<p><code>hollow()</code>: Removes non visible voxels.</p>
+</li>
+<li>
+<p><code>importHeightmap(filename, [underground], [surface])</code>: Imports the given image as heightmap into the current volume. Use the <code>underground</code> and <code>surface</code> voxel colors for this (or pick some defaults if they were not specified). Also see <code>importColoredHeightmap</code> if you want to colorize your surface.</p>
+</li>
+<li>
+<p><code>importColoredHeightmap(filename, [underground])</code>: Imports the given image as heightmap into the current volume. Use the <code>underground</code> voxel colors for this and determine the surface colors from the RGB channel of the given image. Other than with <code>importHeightmap</code> the height is encoded in the alpha channel with this method.</p>
+</li>
+<li>
+<p><code>importImageAsVolume(filename, [filename_depthmap], [palette], [depth], [bothsides])</code>: Imports the given image as volume with the depth values read from the given depth map image file. If no <code>filename_depthmap</code> is given we are looking for the the same filename as given via <code>filename</code> but with a <code>-dm</code> as postfix. Example: <code>filename</code> is <code>foo.png</code> - then the default <code>filename_depthmap</code> is <code>foo-dm.png</code>.</p>
+</li>
+<li>
+<p><code>crop()</code>: Crop the volume and remove empty spaces.</p>
+</li>
+<li>
+<p><code>mirrorAxis([axis])</code>: Mirror along the given axis - <code>y</code> is default.</p>
+</li>
+<li>
+<p><code>move(x, [y], [z])</code>: Move the voxels by the given units without modifying the boundaries of the volume.</p>
+</li>
+<li>
+<p><code>rotateAxis([axis])</code>: Rotate along the given axis - <code>y</code> is default.</p>
+</li>
+<li>
+<p><code>translate(x, [y, z])</code>: Translates the region of the volume. Keep in mind that this is not supported by every output format.</p>
+</li>
+<li>
+<p><code>resize(x, [y, z, extendMins])</code>: Resize the volume by the given sizes. If <code>extendsMins</code> is <code>true</code> the region dimensions are also increased on the lower corner.</p>
+</li>
+<li>
+<p><code>setVoxel(x, y, z, color)</code>: Set the given color at the given coordinates in the volume. <code>color</code> must be in the range <code>[0-255]</code> or <code>-1</code> to delete the voxel.</p>
+</li>
+</ul>
+<p>Access these functions like this:</p>
+<pre><code class="language-lua">local volume = [...]
+local region = volume:region()
+</code></pre>
+<h2 id="vectors">Vectors</h2>
+<p>Available vector types are <code>vec2</code>, <code>vec3</code>, <code>vec4</code> and their integer types <code>ivec2</code>, <code>ivec3</code>, <code>ivec4</code>.</p>
+<p>Access these functions like this:</p>
+<pre><code class="language-lua">local v1 = g_ivec3.new(1, 1, 1)
+</code></pre>
+<p>There are 3 possible components for this vector. You can also call <code>g_ivec3.new(1)</code> to fill all three values with a one. Or call it like this: <code>g_ivec3.new(1, 2)</code> to create a vector with the three components of <code>1, 2, 2</code>.</p>
+<h2 id="quaternion">Quaternion</h2>
+<p>For creating quaternions, you can use <code>g_quat.new()</code></p>
+<ul>
+<li>
+<p><code>rotateXYZ(x, y, z)</code>: Rotates the object along the X, Y, and Z axes by the specified angles.</p>
+</li>
+<li>
+<p><code>rotateXY(x, y)</code></p>
+</li>
+<li>
+<p><code>rotateYZ(y, z)</code></p>
+</li>
+<li>
+<p><code>rotateXZ(x, z)</code></p>
+</li>
+<li>
+<p><code>rotateX(x)</code>: Rotates the object along the X axis by the specified angle.</p>
+</li>
+<li>
+<p><code>rotateY(y)</code>: Rotates the object along the Y axis by the specified angle.</p>
+</li>
+<li>
+<p><code>rotateZ(z)</code>: Rotates the object along the Z axis by the specified angle.</p>
+</li>
+</ul>
+<h2 id="http">HTTP</h2>
+<p>You can perform http requests from within the lua script to query apis or download files</p>
+<pre><code class="language-lua">local stream, responseHeaders = g_http.get(&quot;https://example.localhost&quot;)
+local str = stream:readString()
+print(str)
+for k, v in pairs(responseHeaders) do
+    print(&quot;key: &quot; .. k .. &quot;, value: &quot; .. v)
+end
+</code></pre>
+<pre><code class="language-lua">local requestHeaders = {}
+local stream, responseHeaders = g_http.get(&quot;https://example.localhost&quot;, requestHeaders)
+</code></pre>
+<pre><code class="language-lua">local body = &quot;my body&quot;
+local stream, responseHeaders = g_http.post(&quot;https://example.localhost&quot;, body)
+local str = stream:readString()
+print(str)
+for k, v in pairs(responseHeaders) do
+    print(&quot;key: &quot; .. k .. &quot;, value: &quot; .. v)
+end
+</code></pre>
+<ul>
+<li>
+<p><code>post(url, body, headers</code>: Execute a post request</p>
+</li>
+<li>
+<p><code>get(url, headers)</code>: Execute a get request</p>
+</li>
+</ul>
+<h2 id="importer">Importer</h2>
+<p><code>g_import</code> is a global that offers the ability to load images and palettes or imports scene graphs/<a href="../Formats/">formats</a> from e.g. http downloads.</p>
+<ul>
+<li>
+<p><code>image(filename, stream)</code>: Returns an image that was loaded.</p>
+</li>
+<li>
+<p><code>palette(filename, stream)</code>: Returns a palette that was loaded.</p>
+</li>
+<li>
+<p><code>scene(filename, stream)</code>: Imports the scene from the given stream into the existing scene (<code>g_scenegraph</code>).</p>
+</li>
+<li>
+<p><code>imageAsPlane(filename, image)</code>: Imports the given image as plane into the current scene graph and returns the node.</p>
+</li>
+</ul>
+<h2 id="image">Image</h2>
+<p>Images are loaded by the <code>g_import</code> global.</p>
+<ul>
+<li>
+<p><code>name()</code>: Returns the name of the image</p>
+</li>
+<li>
+<p><code>save(filename)</code>: Save the image as file (<code>png</code> and <code>jpeg</code>)</p>
+</li>
+</ul>
+<h2 id="streams">Streams</h2>
+<p>When using e.g. the <code>g_http</code> requests, you get stream objects as return values.</p>
+<ul>
+<li>
+<p><code>readString([0-terminated:false])</code>: Reads a string from the stream. If the optional parameter <code>0-terminated</code> is set to <code>true</code>, it reads until a null character is encountered otherwise it will read the whole stream as a string.</p>
+</li>
+<li>
+<p><code>readUInt8()</code>: Reads an unsigned 8-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readInt8()</code>: Reads a signed 8-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readUInt16()</code>: Reads an unsigned 16-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readInt16()</code>: Reads a signed 16-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readUInt32()</code>: Reads an unsigned 32-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readInt32()</code>: Reads a signed 32-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readUInt64()</code>: Reads an unsigned 64-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readInt64()</code>: Reads a signed 64-bit integer from the stream.</p>
+</li>
+<li>
+<p><code>readFloat()</code>: Reads a 32-bit floating-point number from the stream.</p>
+</li>
+<li>
+<p><code>readDouble()</code>: Reads a 64-bit floating-point number from the stream.</p>
+</li>
+<li>
+<p><code>writeString(str, [0-terminated:false])</code>: Writes a string to the stream. If the optional parameter <code>0-terminated</code> is set to <code>true</code>, it writes a null character at the end of the string.</p>
+</li>
+<li>
+<p><code>writeUInt8(value)</code>: Writes an unsigned 8-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeInt8(value)</code>: Writes a signed 8-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeUInt16(value)</code>: Writes an unsigned 16-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeInt16(value)</code>: Writes a signed 16-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeUInt32(value)</code>: Writes an unsigned 32-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeInt32(value)</code>: Writes a signed 32-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeUInt64(value)</code>: Writes an unsigned 64-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeInt64(value)</code>: Writes a signed 64-bit integer to the stream.</p>
+</li>
+<li>
+<p><code>writeFloat(value)</code>: Writes a 32-bit floating-point number to the stream.</p>
+</li>
+<li>
+<p><code>writeDouble(value)</code>: Writes a 64-bit floating-point number to the stream.</p>
+</li>
+<li>
+<p><code>writeStream(stream)</code>: Write the data of the given stream to the current stream.</p>
+</li>
+<li>
+<p><code>eos()</code>: returns whether the stream has reached its end</p>
+</li>
+<li>
+<p><code>seek(offset, mode)</code>: change the position in the stream</p>
+</li>
+<li>
+<p><code>tell()</code>: returns the current position in the stream</p>
+</li>
+<li>
+<p><code>pos()</code>: alias for <code>tell()</code></p>
+</li>
+<li>
+<p><code>close()</code>: close the stream and garbage collect (also closes the file - important on windows if you are going to continue to use the same file again)</p>
+</li>
+<li>
+<p><code>size()</code>: returns the size of the stream</p>
+</li>
+</ul>
+<h2 id="io">IO</h2>
+<p><code>g_io</code> can open files for reading and writing and will return a stream instance.</p>
+<ul>
+<li>
+<p><code>sysopen(path, mode)</code>: Can be used to open either an absolute path or a path relative to the current working directory. Modes are <code>r</code> and <code>w</code></p>
+</li>
+<li>
+<p><code>open(path, mode)</code>: Will open the file in the home path of the user to read and write files. Modes are <code>r</code> and <code>w</code></p>
+</li>
+</ul>
+<h2 id="cvar">Cvar</h2>
+<pre><code class="language-lua">g_var.int(&quot;cl_gamma&quot;)
+</code></pre>
+<ul>
+<li>
+<p><code>create(name, value, help = nil, nopersist = false, secret = false)</code>: Create a new cvar that is persisted by default.</p>
+</li>
+<li>
+<p><code>str()</code>: Returns the string value of the cvar</p>
+</li>
+<li>
+<p><code>bool()</code>: Returns the bool value of the cvar</p>
+</li>
+<li>
+<p><code>int()</code>: Returns the int value of the cvar</p>
+</li>
+<li>
+<p><code>float()</code>: Returns the float values of the cvar</p>
+</li>
+<li>
+<p><code>setStr(value: string)</code>: Sets the string value of the cvar</p>
+</li>
+<li>
+<p><code>setBool(value: bool)</code>: Sets the bool value of the cvar</p>
+</li>
+<li>
+<p><code>setInt(value: number)</code>: Sets the int value of the cvar</p>
+</li>
+<li>
+<p><code>setFloat(value: number)</code>: Sets the float values of the cvar</p>
+</li>
+</ul>
+<blockquote>
+<p>To get a full list of cvars use the console command <code>cvarlist</code>.</p>
+</blockquote>
+<h2 id="command">Command</h2>
+<pre><code class="language-lua">g_cmd.execute(&quot;echo test&quot;)
+</code></pre>
+<ul>
+<li><code>execute(cmdline: string)</code>: Execute any of the known commands</li>
+</ul>
+<blockquote>
+<p>To get a full list of commands use the console command <code>cmdlist</code>.</p>
+</blockquote>
+<h2 id="logging">Logging</h2>
+<p>To use the built-in logging facilities use <code>g_log</code> with <code>info</code>, <code>debug</code>, <code>warn</code> and <code>error</code></p>
+<h2 id="system">System</h2>
+<p>The system module is available with <code>g_sys</code> - and includes the following functions</p>
+<ul>
+<li><code>sleep(ms)</code>: Sleep the given milliseconds</li>
+</ul>
+<h2 id="other-useful-information">Other useful information</h2>
+<ul>
+<li><code>y</code> going upwards - see <a href="../Basics/">basics</a> for further details.</li>
+</ul>
+<h2 id="available-scripts">Available scripts</h2>
+<h3 id="animatelua">animate.lua</h3>
+<p>Add animations to an existing model if you name the nodes properly.</p>
+<p><code>xs animate.lua</code></p>
+<h3 id="coverlua">cover.lua</h3>
+<p>Generates a new voxel on top of others with the current selected color and the specified height.</p>
+<p><img alt="cover" src="../img/lua-cover.png" /></p>
+<p><code>xs cover.lua 1</code></p>
+<h3 id="grasslua">grass.lua</h3>
+<p>Generate grass on top of voxels.</p>
+<p><img alt="grass" src="../img/grass.png" /></p>
+<p><code>xs grass.lua</code></p>
+<h3 id="gridlua">grid.lua</h3>
+<p>Generates a grid with given color, thickness and size.</p>
+<p><img alt="grid" src="../img/lua-grid.png" /></p>
+<p><code>xs grid.lua 1 1 5 5 5</code></p>
+<h3 id="noiselua">noise.lua</h3>
+<p>Generates perlin noise with the frequency and amplitude as parameters with the current selected color.</p>
+<p><img alt="noise" src="../img/lua-noise.png" /></p>
+<p><code>xs noise.lua 0.3 1.0</code></p>
+<h3 id="pyramidlua">pyramid.lua</h3>
+<p>Generates a pyramid with the current selected color and with each level being 3 voxels high.</p>
+<p><img alt="pyramid" src="../img/lua-pyramid.png" /></p>
+<p><code>xs pyramid.lua 3</code></p>
+<h3 id="thickenlua">thicken.lua</h3>
+<p>Thickens the voxel - take 1 voxel and convert to 8 voxels (creates a new node for the result).</p>
+<p><img alt="thickenbefore" src="../img/lua-thicken-before.png" /> <img alt="thickenafter" src="../img/lua-thicken-after.png" /></p>
+<p><code>xs thicken.lua 1</code></p>
+<h3 id="others">others</h3>
+<p>There are other scripts available <a href="https://github.com/vengi-voxel/vengi/blob/master/src/modules/voxelgenerator/lua/scripts/">in the repository</a>.</p>
+<h2 id="available-modules">Available modules</h2>
+<h3 id="volumelua">volume.lua</h3>
+<p>This module is here to ease the process of visiting all the voxels in a volume</p>
+<blockquote>
+<p>Keep in mind the <code>-1</code> is an empty voxel</p>
+</blockquote>
+<pre><code class="language-lua">local vol = require &quot;modules.volume&quot;
+
+function main(node, region, color, emptycnt, octaves, lacunarity, gain, threshold)
+    local visitor = function (volume, x, y, z)
+        local color = volume:voxel(x, y, z)
+        if color == -1 then
+            -- empty voxel
+        else
+            -- solid voxel
+        end
+    end
+
+    local condition = function (volume, x, y, z)
+        -- add your checks here
+        return true
+    end
+    vol.conditionYXZ(node:volume(), region, visitor, condition)
+end
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/mgerhardy" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+      
+    
+    
+    
+      
+      
+    
+    <a href="https://mastodon.social/@mgerhardy" target="_blank" rel="noopener me" title="mastodon.social" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M433 179.11c0-97.2-63.71-125.7-63.71-125.7-62.52-28.7-228.56-28.4-290.48 0 0 0-63.72 28.5-63.72 125.7 0 115.7-6.6 259.4 105.63 289.1 40.51 10.7 75.32 13 103.33 11.4 50.81-2.8 79.32-18.1 79.32-18.1l-1.7-36.9s-36.31 11.4-77.12 10.1c-40.41-1.4-83-4.4-89.63-54a102.5 102.5 0 0 1-.9-13.9c85.63 20.9 158.65 9.1 178.75 6.7 56.12-6.7 105-41.3 111.23-72.9 9.8-49.8 9-121.5 9-121.5m-75.12 125.2h-46.63v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.33V197c0-58.5-64-56.6-64-6.9v114.2H90.19c0-122.1-5.2-147.9 18.41-175 25.9-28.9 79.82-30.8 103.83 6.1l11.6 19.5 11.6-19.5c24.11-37.1 78.12-34.8 103.83-6.1 23.71 27.3 18.4 53 18.4 175z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://vengi-voxel.de/discord" target="_blank" rel="noopener" title="vengi-voxel.de" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485 485 0 0 0 404.081 32.03a1.82 1.82 0 0 0-1.923.91 338 338 0 0 0-14.9 30.6 447.9 447.9 0 0 0-134.426 0 310 310 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.7 483.7 0 0 0-119.688 37.107 1.7 1.7 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.02 2.02 0 0 0 .765 1.375 487.7 487.7 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348 348 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321 321 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251 251 0 0 0 9.109-7.137 1.82 1.82 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.81 1.81 0 0 1 1.924.233 235 235 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.4 301.4 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391 391 0 0 0 30.014 48.815 1.86 1.86 0 0 0 2.063.7A486 486 0 0 0 610.7 405.729a1.88 1.88 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541M222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239s23.409-59.241 52.844-59.241c29.665 0 53.306 26.82 52.843 59.239 0 32.654-23.41 59.241-52.843 59.241m195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.654-23.177 59.241-52.844 59.241"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>
