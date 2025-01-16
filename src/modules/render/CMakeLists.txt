@@ -10,6 +10,7 @@ set(SHADERS
 	combine2
 	convolution
 	texture
+	planegrid
 )
 set(SRCS_SHADERS)
 foreach (SHADER ${SHADERS})
